@@ -3,32 +3,32 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.camunda.bpm.extension.examples</groupId>
-		<artifactId>camunda-platform-7-keycloak-examples</artifactId>
-		<version>7.23.1-SNAPSHOT</version>
+		<groupId>org.cibseven.bpm.extension.examples</groupId>
+		<artifactId>cibseven-platform-keycloak-examples</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>camunda-platform-7-keycloak-examples-sso-kubernetes</artifactId>
+	<artifactId>cibseven-platform-keycloak-examples-sso-kubernetes</artifactId>
 
-  	<name>Camunda Platform 7 - engine plugins - identity - keycloak - examples - showcase</name>
-	<description>Showcase for using Camunda Platform 7 Keycloak Identity Provider </description>
+  	<name>Cibseven Platform - engine plugins - identity - keycloak - examples - showcase</name>
+	<description>Showcase for using Cibseven Platform Keycloak Identity Provider </description>
 
 	<properties>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 
-		<docker.imageName>gunnaraccso/camunda-showcase-keycloak:${project.version}</docker.imageName>
+		<!--<docker.imageName>gunnaraccso/camunda-showcase-keycloak:${project.version}</docker.imageName>-->
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.camunda.bpm.springboot</groupId>
-			<artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+			<groupId>org.cibseven.bpm.springboot</groupId>
+			<artifactId>cibseven-bpm-spring-boot-starter-webapp</artifactId>
 			<!-- <artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
 		</dependency>
 
 		<dependency>
-			<groupId>org.camunda.bpm.springboot</groupId>
-			<artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
+			<groupId>org.cibseven.bpm.springboot</groupId>
+			<artifactId>cibseven-bpm-spring-boot-starter-rest</artifactId>
 		</dependency>
 
 		<!-- Spring Security -->
@@ -47,8 +47,8 @@
 
 		<!-- Keycloak Identity Prover Plugin  -->
 		<dependency>
-			<groupId>org.camunda.bpm.extension</groupId>
-			<artifactId>camunda-platform-7-keycloak</artifactId>
+			<groupId>org.cibseven.bpm.extension</groupId>
+			<artifactId>cibseven-platform-keycloak</artifactId>
 		</dependency>
 
 		<!-- Database -->
@@ -56,9 +56,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>42.7.7</version>
 		</dependency>
 
 		<dependency>
@@ -68,12 +70,12 @@
 
 		<!-- Required to use Spin dataformat support -->
 		<dependency>
-			<groupId>org.camunda.spin</groupId>
-			<artifactId>camunda-spin-dataformat-all</artifactId>
+			<groupId>org.cibseven.spin</groupId>
+			<artifactId>cibseven-spin-dataformat-all</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.camunda.bpm</groupId>
-			<artifactId>camunda-engine-plugin-spin</artifactId>
+			<groupId>org.cibseven.bpm</groupId>
+			<artifactId>cibseven-engine-plugin-spin</artifactId>
 		</dependency>
 
         <!-- Monitoring dependencies -->
@@ -95,13 +97,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.camunda.bpm</groupId>
-			<artifactId>camunda-bpm-assert</artifactId>
+			<groupId>org.cibseven.bpm</groupId>
+			<artifactId>cibseven-bpm-assert</artifactId>
 			<scope>test</scope>
 		</dependency>
         <dependency>
-          <groupId>org.camunda.bpm.extension</groupId>
-          <artifactId>camunda-bpm-junit5</artifactId>
+          <groupId>org.cibseven.bpm</groupId>
+          <artifactId>cibseven-bpm-junit5</artifactId>
           <version>1.1.0</version>
           <scope>test</scope>
         </dependency>
@@ -130,11 +132,15 @@
 	</dependencies>
 
 	<repositories>
+		<!-- Cibseven repo -->
+
+
+		<!--
 		<repository>
 			<id>camunda-bpm-nexus</id>
 			<name>Camunda Maven Repository</name>
 			<url>https://artifacts.camunda.com/artifactory/public/</url>
-		</repository>
+		</repository>-->
 		<!-- 
 		<repository>
 			<id>camunda-bpm-ee</id>
@@ -186,7 +192,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.1.1</version>
 				<configuration>
-					<mainClass>org.camunda.bpm.extension.keycloak.showcase.CamundaApplication</mainClass>
+					<mainClass>org.cibseven.bpm.extension.keycloak.showcase.CibsevenApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
