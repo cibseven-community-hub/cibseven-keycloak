@@ -1,10 +1,10 @@
 # Find more available configuration properties on the following pages of the documentation.
-# https://docs.camunda.org/manual/latest/user-guide/camunda-bpm-run/#configure-camunda-bpm-run
-# https://docs.camunda.org/manual/latest/user-guide/spring-boot-integration/configuration/#camunda-engine-properties
+# https://docs.cibseven.org/manual/latest/user-guide/cibseven-run/#configure-cibseven-run
+# https://docs.cibseven.org/manual/latest/user-guide/spring-boot-integration/configuration/#cib-seven-engine-properties
 
 camunda.bpm:
   run:
-# https://docs.camunda.org/manual/latest/user-guide/camunda-bpm-run/#cross-origin-resource-sharing
+# https://docs.cibseven.org/manual/latest/user-guide/cibseven-run/#cross-origin-resource-sharing
     cors:
       enabled: true
       allowed-origins: "*"
@@ -17,7 +17,7 @@ spring.datasource:
   username: sa
   password: sa
 
-# Camunda Keycloak Identity Provider Plugin
+# CIB seven Keycloak Identity Provider Plugin
 # Externalized Keycloak configuration
 keycloak:
   # Keycloak access for the Identity Provider plugin.

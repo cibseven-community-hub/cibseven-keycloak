@@ -1,14 +1,14 @@
-# Camunda Platform 7 - Showcase for Spring Boot & Keycloak Identity Provider
+# CIB seven - Showcase for Spring Boot & Keycloak Identity Provider
 
 ## What it does
 
-This is a basic showcase for a Camunda Platform 7 Spring Boot application using the [Keycloak Identity Provider Plugin](https://github.com/camunda-community-hub/camunda-platform-7-keycloak) in combination with the OAuth 2.0 Client and Resource Server implementation of Spring Security.
+This is a basic showcase for a CIB seven Spring Boot application using the [Keycloak Identity Provider Plugin](https://github.com/cibseven-community-hub/cibseven-keycloak) in combination with the OAuth 2.0 Client and Resource Server implementation of Spring Security.
 
 You will not only login using Keycloak (or if configured using your preferred social identity provider)
 
 ![Keycloak-Login](docs/Keycloak-Login.PNG) 
 
-but most importantly get Users and Groups in Camunda managed by Keycloak as well
+but most importantly get Users and Groups in CIB seven managed by Keycloak as well
 
 ![Keycloak-Groups](docs/Keycloak-Groups.PNG) 
 
@@ -84,7 +84,7 @@ services:
 
 The image ``gunnaraccso/keycloak.server`` has been derived from the original ``quay.io/keycloak/keycloak`` docker image. It additionally includes a basic test setup matching the test configuration of this project. The image exists only for demonstration purposes. Do not use in production. For original Keycloak docker images see [Keycloak Docker images](https://quay.io/repository/keycloak/keycloak?tab=tags&tag=latest).
 
-The only thing you have to adapt for local tests is the **Redirect URI** of the Camuna Identity Service Client. Login at the [Keycloak Admin Console](https://localhost:9001/auth/admin/master/console/#/) using user/password as configured above and add ``http://localhost:8080/camunda/*`` as Valid Redirect URI configuration to the Camunda Identity Service client:
+The only thing you have to adapt for local tests is the **Redirect URI** of the Camunda Identity Service Client. Login at the [Keycloak Admin Console](https://localhost:9001/auth/admin/master/console/#/) using user/password as configured above and add ``http://localhost:8080/camunda/*`` as Valid Redirect URI configuration to the Camunda Identity Service client:
 
 ![Keycloak-RedirectURI](docs/Keycloak-RedirectURI.PNG) 
 
@@ -92,11 +92,11 @@ Beginning with Keycloak 18, you do not only have to configure a valid redirect U
 a valid post logout redirect URL as well. To keep things easy values can be the same:
 ![Keycloak-PostLogoutRedirectURI](docs/Keycloak-PostLogoutRedirectURI.PNG)
 
-For further details on how to setup a Keycloak Camunda Identity Service Client see documentation of [Keycloak Identity Provider Plugin](https://github.com/camunda-community-hub/camunda-platform-7-keycloak). The optional setup for securing Camunda's REST Api is described in the chapters below.
+For further details on how to setup a Keycloak Camunda Identity Service Client see documentation of [Keycloak Identity Provider Plugin](https://github.com/cibseven-community-hub/cibseven-keycloak). The optional setup for securing REST API of CIB seven is described in the chapters below.
 
 ### Keycloak Identity Provider Plugin
 
-The class ``KeycloakIdentityProvider.java`` in package ``org.camunda.bpm.extension.keycloak.showcase.plugin`` will activate the plugin.
+The class ``KeycloakIdentityProvider.java`` in package ``org.cibseven.bpm.extension.keycloak.showcase.plugin`` will activate the plugin.
 
 The main configuration part in ``applicaton.yaml`` is as follows:
 
@@ -110,7 +110,7 @@ keycloak:
   client.id: ${KEYCLOAK_CLIENT_ID:camunda-identity-service}
   client.secret: ${KEYCLOAK_CLIENT_SECRET:42xx42xx-a17b-c63d-e26f-42xx42xx42xx42xx}
 
-# Camunda Keycloak Identity Provider Plugin
+# CIB seven Keycloak Identity Provider Plugin
 plugin.identity.keycloak:
   keycloakIssuerUrl: ${keycloak.url.plugin}/realms/camunda
   keycloakAdminUrl: ${keycloak.url.plugin}/admin/realms/camunda
@@ -126,11 +126,11 @@ If you run Keycloak in the new Quarkus distribution, please be aware that `/auth
 In case you run the derived legacy image still containing Wildfly (e.g. `gunnaraccso/keycloak.server:19.0.3-legacy`), your
 KEYCLOAK_URL_PLUGIN must have the `auth` path added to it, e.g. `http://localhost:9000/auth`.
 
-For configuration details of the plugin see documentation of [Keycloak Identity Provider Plugin](https://github.com/camunda-community-hub/camunda-platform-7-keycloak) 
+For configuration details of the plugin see documentation of [Keycloak Identity Provider Plugin](https://github.com/cibseven-community-hub/cibseven-keycloak) 
 
 ### OAuth2 SSO Configuration
 
-For OAuth2 SSO configuration see package ``org.camunda.bpm.extension.keycloak.showcase.sso``.
+For OAuth2 SSO configuration see package ``org.cibseven.bpm.extension.keycloak.showcase.sso``.
 
 The additional configuration parts in ``applicaton.yaml`` are as follows:
 
@@ -171,11 +171,11 @@ Again: if you run Keycloak in the new Quarkus distribution, please be aware that
 In case you run the derived legacy image still containing Wildfly (e.g. `gunnaraccso/keycloak.server:19.0.3-legacy`), your
 KEYCLOAK_URL_AUTH /  KEYCLOAK_URL_TOKEN must have the `auth` path added to them, e.g. `http://localhost:9000/auth`.
 
-You'll find the security configuraton setup in ``WebAppSecurityConfig``. Please be aware of the ``KeycloakAuthenticationProvider`` which is the bridge between Spring Security and Camunda.
+You'll find the security configuraton setup in ``WebAppSecurityConfig``. Please be aware of the ``KeycloakAuthenticationProvider`` which is the bridge between Spring Security and CIB seven.
 
-### Optional Security for the Camunda REST Api
+### Optional Security for the REST API of CIB seven
 
-In order to secure Camunda's REST Api we're using standard JWT combined with Keycloaks JWKS capabilities. Which implies
+In order to secure REST API of CIB seven we're using standard JWT combined with Keycloaks JWKS capabilities. Which implies
 
 * In order to use the engine's REST interface a client must first obtain a token from the Keycloak server
 * This token must be included in the REST request as authentication header
@@ -186,7 +186,7 @@ In order to secure Camunda's REST Api we're using standard JWT combined with Key
 The additional configuration in ``application.yaml`` is simple and self explaining:
 
 ```yml
-# Camunda Rest API
+# CIB seven Rest API
 rest.security:
   enabled: true
   provider: keycloak
@@ -202,11 +202,11 @@ We need to add a mapper with type ``Audience`` and configure the required audien
 Finally we assign the created Client Scope to our existing Camunda-Identity-Service used for authentication:
 ![KeycloakClientScopeAssignment](docs/Keycloak-Client-Scope-Assignment.PNG)
 
-This ensures, that only users authenticated at the Camunda-Identity-Service are allowed to access Camunda's REST API. Fine grained configuration of the authorization rights can be achieved by adding rules to Camunda's Authorization configuration.
+This ensures, that only users authenticated at the Camunda-Identity-Service are allowed to access REST API of CIB seven. Fine grained configuration of the authorization rights can be achieved by adding rules to Authorization configuration.
 
-The security implementation snippets for the REST Api part can be found in package ``org.camunda.bpm.extension.keycloak.showcase.rest``. 
+The security implementation snippets for the REST Api part can be found in package ``org.cibseven.bpm.extension.keycloak.showcase.rest``. 
 
-Besides a typical Web security configuration ``RestApiSecurityConfig`` including OAuth 2.0 Resource Server support we need a ``KeycloakAuthenticationFilter`` registered at the end of the Spring Security Filter Chain. Its job is to pass the authenticated user id and groupIds to Camunda's IdentityService:
+Besides a typical Web security configuration ``RestApiSecurityConfig`` including OAuth 2.0 Resource Server support we need a ``KeycloakAuthenticationFilter`` registered at the end of the Spring Security Filter Chain. Its job is to pass the authenticated user id and groupIds to IdentityService:
 
 ```java
 @Override
@@ -244,11 +244,11 @@ A unit test checking the REST Api security is provided in class ``RestApiSecurit
 
 ### Logging out from Cockpit
 
-Doing a SSO logout (assuming that this is desired) using the Camunda Cockpit's logout menu button requires us to send a logout request to Keycloak. In order to achieve this we have to replace the original logout functionality, then delegate the logout to our own logout handler which in turn redirects the logout request to Keycloak.
+Doing a SSO logout (assuming that this is desired) using the CIB seven Cockpit's logout menu button requires us to send a logout request to Keycloak. In order to achieve this we have to replace the original logout functionality, then delegate the logout to our own logout handler which in turn redirects the logout request to Keycloak.
 
 #### Replacing the original logout
 
-In order to replace the UI's logout functionality you have to provide a custom ``config.js`` file, located in the ``app/{admin|tasklist|welcome}/scripts/`` directory of the Camunda webapps. You'll find the custom configuration under ``src/main/resources/META-INF/resources/webjars/camunda`` of this showcase. It simply configures a custom logout script:
+In order to replace the UI's logout functionality you have to provide a custom ``config.js`` file, located in the ``app/{admin|tasklist|welcome}/scripts/`` directory of the CIB seven webapps. You'll find the custom configuration under ``src/main/resources/META-INF/resources/webjars/camunda`` of this showcase. It simply configures a custom logout script:
 
 ```javascript
 export default {
@@ -309,10 +309,10 @@ public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
 }
 ```
 
-The handler itself (see ``org.camunda.bpm.extension.keycloak.showcase.sso.KeycloakLogoutHandler``) takes care of sending an appropriate redirect to Keycloak. The redirect URI will look similar to
+The handler itself (see ``org.cibseven.bpm.extension.keycloak.showcase.sso.KeycloakLogoutHandler``) takes care of sending an appropriate redirect to Keycloak. The redirect URI will look similar to
 ``http://<keycloak-server>/realms/camunda/protocol/openid-connect/logout?redirect_uri=http://<camunda-server>/camunda``.
 
-So the logout button now redirects to the Keycloak logout URL which then redirects back to the Camunda Cockpit. Because we're not authenticated any more, Spring Security will then start a new authentication flow.
+So the logout button now redirects to the Keycloak logout URL which then redirects back to the CIB seven Cockpit. Because we're not authenticated any more, Spring Security will then start a new authentication flow.
 
 #### Logout URL for Keycloak versions < 18.0.0
 
@@ -347,8 +347,8 @@ The Docker Image Build is using the `gcr.io/paketo-buildpacks/adoptium` Buildpac
 #### Java module dependencies & jlinked Java 17
 
 Just for the records - how to find out java module dependencies and shrink your JRE:
-* Extract ``target/camunda-platform-7-keycloak-examples-sso-kubernetes.jar/BOOT-INF/lib`` to `target/lib``
-* Open a shell in ``target`` and run ``jdeps -cp lib/* -R --multi-release 17 --print-module-deps --ignore-missing-deps camunda-platform-7-keycloak-examples-sso-kubernetes.jar``
+* Extract ``target/cibseven-keycloak-examples-sso-kubernetes.jar/BOOT-INF/lib`` to `target/lib``
+* Open a shell in ``target`` and run ``jdeps -cp lib/* -R --multi-release 17 --print-module-deps --ignore-missing-deps cibseven-keycloak-examples-sso-kubernetes.jar``
 
 The result goes to the jlink `add-modules` option in the `BP_JVM_JLINK_ARGS` environment parameter of the `spring-boot-maven-plugin` image configuration.
 
@@ -367,9 +367,9 @@ Keep in mind that the included ``keycloak/deployment.yaml`` is only a test setup
 
 After setting up your Keycloak server you can start the deployment of the showcase.
 
-**Camunda Showcase Kubernetes Setup**
+**CIB seven Showcase Kubernetes Setup**
 
-In order to make the Camunda Showcase work the following points are noteworthy:
+In order to make the CIB seven Showcase work the following points are noteworthy:
 * You have to activate sticky sessions within the ingress service. We have more than one pod running the showcase!
 * Keep in mind, that sticky sessions won't work without a host setting (important for a local test setup) and it is recommended to add a ``session-cookie-path`` (I have seen error reports on that - might be fixed, might be not fixed meanwhile).
 
@@ -389,7 +389,7 @@ This showcase still works with sticky sessions. It might be worth reading the Ca
 
 ------------------------------------------------------------
 
-That's it. Have a happy Camunda Keycloak experience and focus on what really matters: the core processes of your customer.
+That's it. Have a happy CIB seven Keycloak experience and focus on what really matters: the core processes of your customer.
 
 Brought to you by:
 

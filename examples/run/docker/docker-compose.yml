@@ -17,7 +17,7 @@ services:
       - ./ssl/cert.pem:/keycloak/config/ssl/cert.pem
       - ./ssl/key.pem:/keycloak/config/ssl/key.pem
 
-  camunda:
+  cibseven:
     build: .
     ports: 
       - "8080:8080"

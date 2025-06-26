@@ -1,11 +1,11 @@
-# Installation on Camunda Platform Run
-This document describes the installation of the **Keycloak Camunda Identity Provider Plugin** on a the [Camunda BPM Run](https://docs.camunda.org/manual/latest/user-guide/camunda-bpm-run/) distribution.
+# Installation on CIB seven Run
+This document describes the installation of the **Keycloak CIB seven Identity Provider Plugin** on a the [CIB seven Run](https://docs.cibseven.org/manual/latest/user-guide/cibseven-run/) distribution.
 
 ## Install the Keycloak Identity Provider Plugin
 
-In order to install the Keycloak Identity Provider Plugin you have to download the library ``camunda-platform-7-keycloak-run-x.y.z.jar`` and copy it to ``$CAMUNDA_BPM_RUN_ROOT/configuration/userlib``.
+In order to install the Keycloak Identity Provider Plugin you have to download the library ``cibseven-keycloak-run-x.y.z.jar`` and copy it to ``$CIBSEVEN_BPM_RUN_ROOT/configuration/userlib``.
 
-Please be aware that you must use the provided ``*-run-x.y.z.jar`` (fat jar, packaged with the "**-run**" extension) including transitive dependencies. The additional library is available since version ``2.0.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.camunda.bpm.extension%20AND%20a:camunda-platform-7-keycloak-run).
+Please be aware that you must use the provided ``*-run-x.y.z.jar`` (fat jar, packaged with the "**-run**" extension) including transitive dependencies. The additional library is available since version ``2.0.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.bpm.extension%20AND%20a:cibseven-keycloak-run).
 
 For the records - included dependencies are:
 
@@ -20,10 +20,10 @@ The ``com.google.code.gson`` and ``com.github.ben-manes.caffeine`` dependencies 
 
 ## Configure the Keycloak Identity Provider Plugin
 
-The last step is to edit the ``default.yml`` or ``production.yml`` file inside the folder ``$CAMUNDA_BPM_RUN_ROOT/configuration`` and configure the plugin. A sample configuration looks as follows:
+The last step is to edit the ``default.yml`` or ``production.yml`` file inside the folder ``$CIBSEVEN_BPM_RUN_ROOT/configuration`` and configure the plugin. A sample configuration looks as follows:
 
 ```yml
-# Camunda Keycloak Identity Provider Plugin
+# CIB seven Keycloak Identity Provider Plugin
 plugin.identity.keycloak:
   keycloakIssuerUrl: https://localhost:9001/auth/realms/camunda
   keycloakAdminUrl: https://localhost:9001/auth/admin/realms/camunda
@@ -46,14 +46,14 @@ camunda.bpm:
 
 The Keycloak Identity Provider is a ReadOnly Identity Provider and thus not allowed to create users upon startup.
 
-For a full documentation of all configuration properties see the documentation of the [Keycloak Identity Provider Plugin](https://github.com/camunda-community-hub/camunda-platform-7-keycloak) itself.
+For a full documentation of all configuration properties see the documentation of the [Keycloak Identity Provider Plugin](https://github.com/cibseven-community-hub/cibseven-keycloak) itself.
 
 ## Docker Sample Setup
 
 Within the subdirectory `docker` you'll find a basic sample consisting of:
 
-* ``Dockerfile``: custom Docker image consisting of Camunda BPM Run and the Keycloak Identity Provider Plugin. Adapt Camunda and plugin versions to your own needs.
-* ``docker-compose.yml``: simple setup consisting of the custom Camunda Keycloak Docker image and a preconfigured Keycloak instance with the ``camunda-identity-service`` client and a Camunda admin user and group.
+* ``Dockerfile``: custom Docker image consisting of CIB seven Run and the Keycloak Identity Provider Plugin. Adapt CIB seven and plugin versions to your own needs.
+* ``docker-compose.yml``: simple setup consisting of the custom CIB seven Keycloak Docker image and a preconfigured Keycloak instance with the ``camunda-identity-service`` client and a CIB seven admin user and group.
 
 Usage:
 

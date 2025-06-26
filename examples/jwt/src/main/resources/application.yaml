@@ -58,7 +58,7 @@ plugin.cockpit.keycloak:
   realm: ${keycloak.jwt.realm}
   clientId: ${keycloak.jwt.client.id}
 
-# Camunda Keycloak Identity Provider Plugin
+# CIB seven Keycloak Identity Provider Plugin
 plugin.identity.keycloak:
   keycloakIssuerUrl: ${keycloak.url}/realms/camunda
   keycloakAdminUrl: ${keycloak.url}/admin/realms/camunda
