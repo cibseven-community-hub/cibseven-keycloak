@@ -1,8 +1,8 @@
-/target/
-/.settings/
-/.classpath
-/.project
 **/target/
+**/.settings
+**/.classpath
+**/.factorypath
+**/.project
 
 ### IntelliJ IDEA ###
 .idea

@@ -4,14 +4,14 @@
 
 	<parent>
 		<groupId>org.cibseven.bpm.extension.examples</groupId>
-		<artifactId>cibseven-platform-keycloak-examples</artifactId>
+		<artifactId>cibseven-keycloak-examples</artifactId>
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>cibseven-platform-keycloak-examples-sso-kubernetes</artifactId>
+	<artifactId>cibseven-keycloak-examples-sso-kubernetes</artifactId>
 
-  	<name>Cibseven Platform - engine plugins - identity - keycloak - examples - showcase</name>
-	<description>Showcase for using Cibseven Platform Keycloak Identity Provider </description>
+  	<name>CIB seven - engine plugins - identity - keycloak - examples - showcase</name>
+	<description>Showcase for using CIB seven Keycloak Identity Provider</description>
 
 	<properties>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
@@ -48,7 +48,7 @@
 		<!-- Keycloak Identity Prover Plugin  -->
 		<dependency>
 			<groupId>org.cibseven.bpm.extension</groupId>
-			<artifactId>cibseven-platform-keycloak</artifactId>
+			<artifactId>cibseven-keycloak</artifactId>
 		</dependency>
 
 		<!-- Database -->
@@ -104,7 +104,6 @@
         <dependency>
           <groupId>org.cibseven.bpm</groupId>
           <artifactId>cibseven-bpm-junit5</artifactId>
-          <version>1.1.0</version>
           <scope>test</scope>
         </dependency>
 
@@ -133,6 +132,7 @@
 
 	<repositories>
 		<!-- Cibseven repo -->
+		<!-- 2025.06.26, Oleg: ToDo - delete, probably not needed, since inherited from root pom-->
 
 
 		<!--

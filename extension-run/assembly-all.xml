@@ -14,8 +14,8 @@
       <unpack>true</unpack>
       <scope>compile</scope>
       <includes>
-      	  <include>org.cibseven.bpm.extension:cibseven-platform-keycloak</include>
-          <include>org.cibseven.bpm.extension:cibseven-platform-keycloak-run</include>
+      	  <include>org.cibseven.bpm.extension:cibseven-keycloak</include>
+          <include>org.cibseven.bpm.extension:cibseven-keycloak-run</include>
       </includes>
     </dependencySet>
   </dependencySets>

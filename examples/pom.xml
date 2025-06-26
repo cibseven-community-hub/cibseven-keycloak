@@ -4,16 +4,16 @@
 
   <parent>
     <groupId>org.cibseven.bpm.extension</groupId>
-    <artifactId>cibseven-platform-keycloak-root</artifactId>
+    <artifactId>cibseven-keycloak-root</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.cibseven.bpm.extension.examples</groupId>
-  <artifactId>cibseven-platform-keycloak-examples</artifactId>
+  <artifactId>cibseven-keycloak-examples</artifactId>
 
   <packaging>pom</packaging>
-  <name>Cibseven Platform - engine plugins - identity - keycloak - examples</name>
-  <description>Cibseven Keycloak Identity Provider Plugin Examples</description>
+  <name>CIB seven - engine plugins - identity - keycloak - examples</name>
+  <description>CIB seven Keycloak Identity Provider Plugin Examples</description>
   
   <modules>
     <module>sso-kubernetes</module>
