@@ -4,6 +4,7 @@ on:
   push: 
   schedule:
   - cron: '2 2 * * 1-5' # run nightly master builds on weekdays
+  workflow_dispatch: # can be used to trigger the workflow manually
 
 jobs:
   build:

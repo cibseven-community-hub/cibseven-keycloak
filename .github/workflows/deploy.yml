@@ -10,7 +10,9 @@ on:
   push:
     branches: [master]
   release:
-    types: [published]
+    types: [published]  
+  workflow_dispatch: # can be used to trigger the workflow manually
+  
 jobs:
   publish:
     runs-on: ubuntu-24.04
@@ -50,7 +52,7 @@ jobs:
         gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_SEC }}
         gpg-passphrase: MAVEN_CENTRAL_GPG_PASSPHRASE
     - name: Deploy SNAPSHOT / Release
-      uses: camunda-community-hub/community-action-maven-release@v1.2.3
+      uses: cibseven-community-hub/cibseven-action-maven-release@v0.0.1
       with:
         release-version: ${{ github.event.release.tag_name }}
         release-profile: community-action-maven-release
