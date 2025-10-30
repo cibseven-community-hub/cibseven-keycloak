@@ -11,7 +11,7 @@ on:
     branches: [master]
   release:
     types: [published]  
-  workflow_dispatch: # can be used to trigger the workflow manually
+  workflow_dispatch: # when triggering manually, release-version empty, so SNAPSHOT is deployed
   
 jobs:
   publish:
@@ -27,15 +27,6 @@ jobs:
     - name: Cancel workflow when build fails
       if: steps.wait-for-build.outputs.conclusion == 'failure'
       run: echo "Build failed, skipping deploy" && exit 1
-    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2 # pin@v2
-    - name: Detect release type
-      run: |-
-        if [[ "${{github.ref}}" == "refs/heads/master" ]]; then
-          echo "::set-output name=type::SNAPSHOT"
-        else
-          echo "::set-output name=type::RELEASE"
-        fi
-      id: release-detection
     - uses: actions/checkout@v4
     - name: Cache
       uses: actions/cache@v4
@@ -52,8 +43,10 @@ jobs:
         gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_SEC }}
         gpg-passphrase: MAVEN_CENTRAL_GPG_PASSPHRASE
     - name: Deploy SNAPSHOT / Release
-      uses: cibseven-community-hub/cibseven-action-maven-release@v0.0.1
+      uses: cibseven-community-hub/community-action-maven-release@v0.0.1
       with:
+        # release-version is only set when the workflow is triggered by a GitHub Release.
+        # community-action-maven-release checks release-version to deploy SNAPSHOT or release
         release-version: ${{ github.event.release.tag_name }}
         release-profile: community-action-maven-release
         nexus-usr: ${{ secrets.NEXUS_USR }}
