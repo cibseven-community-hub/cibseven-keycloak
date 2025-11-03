@@ -48,7 +48,7 @@ jobs:
         # release-version is only set when the workflow is triggered by a GitHub Release.
         # community-action-maven-release checks release-version to deploy SNAPSHOT or release
         release-version: ${{ github.event.release.tag_name }}
-        release-profile: community-action-maven-release
+        # not setting release-profile to rely on default central-release-profile of community-action-maven-release
         nexus-usr: ${{ secrets.NEXUS_USR }}
         nexus-psw: ${{ secrets.NEXUS_PSW }}
         sonatype-central-portal-usr: ${{ secrets.COMMUNITY_HUB_MAVEN_CENTRAL_CP_USR }}
