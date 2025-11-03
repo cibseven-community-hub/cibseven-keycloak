@@ -25,7 +25,7 @@
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
 
     <!-- versions -->
-	  <version.cibseven>2.0.0</version.cibseven>
+	  <version.cibseven>2.1.0</version.cibseven>
     <!-- <version.camunda>7.23.0-ee</version.camunda> -->
   	<version.springBoot>3.4.5</version.springBoot>
     <version.commons-codec>1.18.0</version.commons-codec>
