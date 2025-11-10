@@ -27,7 +27,7 @@ jobs:
     - name: Cancel workflow when build fails
       if: steps.wait-for-build.outputs.conclusion == 'failure'
       run: echo "Build failed, skipping deploy" && exit 1
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Cache
       uses: actions/cache@v4
       with:
@@ -36,7 +36,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
     - name: Set up Java environment
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: 17
         distribution: temurin
