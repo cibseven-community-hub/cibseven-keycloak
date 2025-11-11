@@ -41,7 +41,7 @@ public class WebAppSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
-		String path = camundaBpmProperties.getWebapp().getApplicationPath();
+		String path = camundaBpmProperties.getWebapp().getLegacyApplicationPath();
 		return http
 				.csrf(csrf -> csrf
 						.ignoringRequestMatchers(antMatcher(path + "/api/**"), antMatcher("/engine-rest/**")))
@@ -62,7 +62,7 @@ public class WebAppSecurityConfig {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
     public FilterRegistrationBean containerBasedAuthenticationFilter() {
-		String camundaWebappPath = camundaBpmProperties.getWebapp().getApplicationPath();
+		String camundaWebappPath = camundaBpmProperties.getWebapp().getLegacyApplicationPath();
 
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new KeycloakJwtAuthenticationFilter(camundaWebappPath));
@@ -77,7 +77,7 @@ public class WebAppSecurityConfig {
 	public FilterRegistrationBean cockpitConfigurationFilter() {
 		return new KeycloakConfigurationFilterRegistrationBean(
 				keycloakCockpitConfiguration,
-				camundaBpmProperties.getWebapp().getApplicationPath()
+				camundaBpmProperties.getWebapp().getLegacyApplicationPath()
 		);
 	}
 
