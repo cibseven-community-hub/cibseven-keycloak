@@ -29,7 +29,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 	/** This class' logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
 	
-	/** Access to Camunda's IdentityService. */
+	/** Access to CIB seven's IdentityService. */
 	private IdentityService identityService;
 	
 	/** Access to the OAuth2 client service. */

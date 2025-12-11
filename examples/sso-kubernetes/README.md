@@ -77,14 +77,12 @@ services:
     ports:
       - "9001:8443"
       - "9000:8080"
-    command:
-      - start-dev
-      - --features admin-fine-grained-authz
+    command: ["start-dev", "--features=admin-fine-grained-authz"]
 ```
 
 The image ``gunnaraccso/keycloak.server`` has been derived from the original ``quay.io/keycloak/keycloak`` docker image. It additionally includes a basic test setup matching the test configuration of this project. The image exists only for demonstration purposes. Do not use in production. For original Keycloak docker images see [Keycloak Docker images](https://quay.io/repository/keycloak/keycloak?tab=tags&tag=latest).
 
-The only thing you have to adapt for local tests is the **Redirect URI** of the Camunda Identity Service Client. Login at the [Keycloak Admin Console](https://localhost:9001/auth/admin/master/console/#/) using user/password as configured above and add ``http://localhost:8080/camunda/*`` as Valid Redirect URI configuration to the Camunda Identity Service client:
+The only thing you have to adapt for local tests is the **Redirect URI** of the Camunda Identity Service Client. Login at the [Keycloak Admin Console](https://localhost:9001/auth/admin/master/console/#/) using user/password as configured above and add ``http://localhost:8080/camunda/*``, ``http://localhost:8080/webapp/sso-login.html`` and ``http://localhost:8080/login/*`` as Valid Redirect URI configuration to the Camunda Identity Service client:
 
 ![Keycloak-RedirectURI](docs/Keycloak-RedirectURI.PNG) 
 
@@ -132,7 +130,7 @@ For configuration details of the plugin see documentation of [Keycloak Identity 
 
 For OAuth2 SSO configuration see package ``org.cibseven.bpm.extension.keycloak.showcase.sso``.
 
-The additional configuration parts in ``applicaton.yaml`` are as follows:
+The additional configuration parts in ``application.yaml`` are as follows:
 
 ```yml
 # Externalized Keycloak configuration
@@ -242,13 +240,13 @@ The REST API URL for this example is `http://localhost:8080/camunda/engine-rest`
 
 A unit test checking the REST Api security is provided in class ``RestApiSecurityConfigTest``. Please be aware that the unit test requires a running Keycloak Server including the setup described above. Therefore it is ignored as standard.
 
-### Logging out from Cockpit
+### Logging out from legacy Camunda Cockpit
 
-Doing a SSO logout (assuming that this is desired) using the CIB seven Cockpit's logout menu button requires us to send a logout request to Keycloak. In order to achieve this we have to replace the original logout functionality, then delegate the logout to our own logout handler which in turn redirects the logout request to Keycloak.
+Doing a SSO logout (assuming that this is desired) using the legacy Camunda Cockpit's logout menu button requires us to send a logout request to Keycloak. In order to achieve this we have to replace the original logout functionality, then delegate the logout to our own logout handler which in turn redirects the logout request to Keycloak.
 
 #### Replacing the original logout
 
-In order to replace the UI's logout functionality you have to provide a custom ``config.js`` file, located in the ``app/{admin|tasklist|welcome}/scripts/`` directory of the CIB seven webapps. You'll find the custom configuration under ``src/main/resources/META-INF/resources/webjars/camunda`` of this showcase. It simply configures a custom logout script:
+In order to replace the UI's logout functionality you have to provide a custom ``config.js`` file, located in the ``app/{admin|tasklist|welcome}/scripts/`` directory of the legacy Camunda webapps. You'll find the custom configuration under ``src/main/resources/META-INF/resources/webjars/camunda`` of this showcase. It simply configures a custom logout script:
 
 ```javascript
 export default {

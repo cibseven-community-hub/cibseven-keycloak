@@ -2,7 +2,9 @@ package org.cibseven.bpm.extension.keycloak.showcase.sso;
 
 import jakarta.inject.Inject;
 
+import org.cibseven.bpm.spring.boot.starter.property.CamundaBpmProperties;
 import org.cibseven.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
@@ -33,24 +36,39 @@ public class WebAppSecurityConfig {
 	@Inject
 	private KeycloakLogoutHandler keycloakLogoutHandler;
 
+    private final String legacyWebappPath;
+
+    public WebAppSecurityConfig(CamundaBpmProperties properties) {
+      this.legacyWebappPath = properties.getWebapp().getLegacyApplicationPath();
+    }
+
     @Bean
     @Order(2)
     public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
         return http
+            .securityMatcher(request -> {
+                String fullPath = request.getServletPath() + (request.getPathInfo() != null ? request.getPathInfo() : "");
+                return fullPath.startsWith(legacyWebappPath) || 
+                       fullPath.startsWith(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI) ||
+                       fullPath.startsWith("/login") ||
+                       fullPath.startsWith("/logout");
+              })
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**")))
+                .ignoringRequestMatchers(
+                        antMatcher(legacyWebappPath + "/api/**"),
+                        antMatcher("/engine-rest/**")))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
-                        antMatcher("/assets/**"),
-                        antMatcher("/app/**"),
-                        antMatcher("/api/**"),
-                        antMatcher("/lib/**"))
+                        antMatcher(legacyWebappPath + "/assets/**"),
+                        antMatcher(legacyWebappPath + "/app/**"),
+                        antMatcher(legacyWebappPath + "/api/**"),
+                        antMatcher(legacyWebappPath + "/lib/**"))
                 .authenticated()
                 .anyRequest()
                 .permitAll())
             .oauth2Login(withDefaults())
             .logout(logout -> logout
-                .logoutRequestMatcher(antMatcher("/app/**/logout"))
+                .logoutRequestMatcher(antMatcher(legacyWebappPath + "/app/**/logout"))
                 .logoutSuccessHandler(keycloakLogoutHandler)
             )
             .build();
@@ -64,7 +82,7 @@ public class WebAppSecurityConfig {
         filterRegistration.setFilter(new ContainerBasedAuthenticationFilter());
         filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "org.cibseven.bpm.extension.keycloak.showcase.sso.KeycloakAuthenticationProvider"));
         filterRegistration.setOrder(201); // make sure the filter is registered after the Spring Security Filter Chain
-        filterRegistration.addUrlPatterns("/app/*");
+        filterRegistration.addUrlPatterns(legacyWebappPath + "/app/*");
         return filterRegistration;
     }
  

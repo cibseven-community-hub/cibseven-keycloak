@@ -12,3 +12,46 @@ rest.security:
   enabled: false
   provider: keycloak
   required-audience: camunda-rest-api
+
+# Externalized Keycloak configuration
+keycloak:
+  # SSO Authentication requests. Send by application as redirect to the browser
+  url.auth: ${KEYCLOAK_URL_AUTH:http://localhost:9000/auth}
+  # SSO Token requests. Send from the application to Keycloak
+  url.token: ${KEYCLOAK_URL_TOKEN:http://localhost:9000/auth}
+  # Keycloak access for the Identity Provider plugin.
+  url.plugin: ${KEYCLOAK_URL_PLUGIN:http://localhost:9000/auth}
+
+  # Keycloak Camunda Identity Client
+  client.id: ${KEYCLOAK_CLIENT_ID:camunda-identity-service}
+  client.secret: ${KEYCLOAK_CLIENT_SECRET:GBLb9KSRxmmo81SIGH2BWu3GEtrofvWo}
+
+spring:
+  config:
+    import:
+      - optional:classpath:cibseven-webclient.properties
+
+cibseven:
+  webclient:
+    engineRest:
+      url: http://localhost:8080
+    authentication:
+      tokenValidMinutes: 30
+      tokenProlongMinutes: 10
+    sso:
+      active: true
+      endpoints:
+        authorization: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/auth
+        token:  ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/token
+        jwks: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/certs
+        user: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/users
+      clientId: ${keycloak.client.id}
+      clientSecret: ${keycloak.client.secret}
+      scopes: openid email profile
+      userIdProperty: preferred_username
+      userNameProperty: name
+      accessTokenToEngineRest: true
+    bpm:
+     provider: org.cibseven.webapp.providers.SevenProvider
+    user:
+     provider: org.cibseven.webapp.auth.KeycloakUserProvider
