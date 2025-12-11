@@ -164,7 +164,33 @@ In order to activate the login cache you have the following options available:
 
 On the downside this feature bypasses the password grant exchange function of Keycloak until the configured timeout expires. So the choice is yours. Please be aware that the login cache is not applicable for SSO scenarios.
 
-## Activating Single Sign On
+## Activating Single Sign On for CIB seven webapp
+
+The CIB seven webclient manages SSO by its own, so we only need to configure the application yaml like follows:
+
+```yml
+  cibseven.webclient:
+    user:
+      provider: org.cibseven.webapp.auth.KeycloakUserProvider # 1
+    sso: # 2
+      active: true
+      endpoints:
+        authorization: <authUri>
+        token: <tokenUri>
+        jwks: <certsUri>
+        user: <usersUri>
+      clientId: <clientId>
+      clientSecret: <clientSecret>
+      scopes: openid email profile # 3
+      userIdProperty: preferred_username
+      userNameProperty: name
+```
+1. Using KeycloakUserProvider.
+2. SSO login enabled for CIB seven webclient.
+3. Defines the openid, profile and email scopes.
+
+
+## Activating Single Sign On for the legacy Camunda webapp
 
 In this part, we’ll discuss how to activate SSO – Single Sign On – for the CIB seven Web App using Spring Boot and Spring Security 5.2.x OAuth 2.0 Client capabilities in combination with this plugin and Keycloak as authorization server.
 
@@ -220,29 +246,45 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 }
 ```
 
-Last but not least add a security configuration and enable OAuth2 SSO:
+Last but not least add a security configuration and enable OAuth2 SSO for the legacy Camunda webapp:
 
 ```java
 /**
- * CIB seven Web application SSO configuration for usage with KeycloakIdentityProviderPlugin.
+ * Legacy Camunda Web application SSO configuration for usage with KeycloakIdentityProviderPlugin.
  */
 @ConditionalOnMissingClass("org.springframework.test.context.junit.jupiter.SpringExtension")
 @EnableWebSecurity
 @Configuration
 public class WebAppSecurityConfig {
 
+	 @Inject
+	 private KeycloakLogoutHandler keycloakLogoutHandler;
+	
+    private final String legacyWebappPath;
+
+    public WebAppSecurityConfig(CamundaBpmProperties properties) {
+      this.legacyWebappPath = properties.getWebapp().getLegacyApplicationPath();
+    }
+    
     @Bean
     @Order(2)
     public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
         return http
+                .securityMatcher(request -> {
+                    String fullPath = request.getServletPath() + (request.getPathInfo() != null ? request.getPathInfo() : "");
+                    return fullPath.startsWith(legacyWebappPath) || 
+                       fullPath.startsWith(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI) ||
+                       fullPath.startsWith("/login") ||
+                       fullPath.startsWith("/logout");
+                })
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**")))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                antMatcher("/assets/**"),
-                                antMatcher("/app/**"),
-                                antMatcher("/api/**"),
-                                antMatcher("/lib/**"))
+                                antMatcher(legacyWebappPath + "/assets/**"),
+                                antMatcher(legacyWebappPath + "/app/**"),
+                                antMatcher(legacyWebappPath + "/api/**"),
+                                antMatcher(legacyWebappPath + "/lib/**"))
                         .authenticated()
                         .anyRequest()
                         .permitAll())
@@ -258,7 +300,7 @@ public class WebAppSecurityConfig {
         filterRegistration.setFilter(new ContainerBasedAuthenticationFilter());
         filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "org.cibseven.bpm.extension.keycloak.showcase.sso.KeycloakAuthenticationProvider"));
         filterRegistration.setOrder(201); // make sure the filter is registered after the Spring Security Filter Chain
-        filterRegistration.addUrlPatterns("/app/*");
+        filterRegistration.addUrlPatterns(legacyWebappPath + "/app/*");
         return filterRegistration;
     }
 
