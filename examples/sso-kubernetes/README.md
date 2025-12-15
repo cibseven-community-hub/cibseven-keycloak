@@ -383,7 +383,7 @@ Since this is just a quick start, I didn't use a full SSL setup including the in
 
 ### Outlook
 
-This showcase still works with sticky sessions. It might be worth reading the Camunda blog article [Camunda BPM - Session Management in Cloud Environments](https://blog.camunda.com/post/2019/06/camunda-bpm-with-session-manager/) and integrate the findings.
+If you run the legacy Camunda webapp for this showcase, it still works with sticky sessions. It might be worth reading the Camunda blog article [Camunda BPM - Session Management in Cloud Environments](https://blog.camunda.com/post/2019/06/camunda-bpm-with-session-manager/) and integrate the findings.
 
 ------------------------------------------------------------
 

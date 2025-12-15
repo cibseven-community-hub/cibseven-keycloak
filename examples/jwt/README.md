@@ -1,9 +1,9 @@
 # CIB seven - Example for Spring Boot & Keycloak Identity Provider - JWT extension
 
-This is the alternative way, how Keycloak can be configured with client side JWT authentication in CIB seven Cockpit.
+This is the alternative way, how Keycloak can be configured with client side JWT authentication in the legacy Camunda Cockpit.
 This configuration does not rely on server side and does not require sticky sessions on your environment.
 
-It is based on javascript integration from Keycloak (keycloak.js) and an interceptor for CIB seven Cockpit.
+It is based on javascript integration from Keycloak (keycloak.js) and an interceptor for the legacy Camunda Cockpit.
 
 **Beware:** this is still in incubation / preview status and might change in the future.
 
@@ -174,7 +174,7 @@ Now you are ready for the last step: activate Keycloak on the client side.
 
 ### Enabling `keycloak.js` in CIB seven Web Applications
 
-You'll find the custom configuration for CIB seven Cockpit UI under ``src/main/resources/META-INF/resources/webjars/camunda``. Rely on this directory as a base directory for the next step. 
+You'll find the custom configuration for the legacy Camunda Cockpit UI under ``src/main/resources/META-INF/resources/webjars/camunda``. Rely on this directory as a base directory for the next step. 
 
 To enable the JWT authorization plugin on the client side you have to provide a custom ``config.js`` file, located in the ``app/{admin|cockpit|tasklist|welcome}/scripts/`` directory of the CIB seven webapps. It simply configures a custom authentication script:
 
