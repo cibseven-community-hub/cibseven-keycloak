@@ -27,8 +27,8 @@
     <!-- versions -->
 	  <version.cibseven>2.1.0</version.cibseven>
     <!-- <version.camunda>7.23.0-ee</version.camunda> -->
-  	<version.springBoot>3.5.8</version.springBoot>
-    <version.commons-codec>1.20.0</version.commons-codec>
+    <version.springBoot>3.5.6</version.springBoot>
+    <version.commons-codec>1.18.0</version.commons-codec>
 
   </properties>
 
