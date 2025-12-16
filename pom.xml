@@ -94,20 +94,16 @@
       <name>CIB seven Public Repository</name>
       <url>https://artifacts.cibseven.org/repository/public</url>
     </repository>
-    <!-- Camunda Repository -->
-    <!--
     <repository>
-        <id>camunda-bpm</id>
-        <name>Camunda Enterprise Maven Repository</name>
-        <url>https://artifacts.camunda.com/artifactory/camunda-bpm/</url>
-    </repository> -->
-    <!-- Camunda EE Repository 
-    <repository>
-        <id>camunda-bpm-ee</id>
-        <name>Camunda Enterprise Maven Repository</name>
-        <url>https://artifacts.camunda.com/artifactory/camunda-bpm-ee/</url>
+      <id>mvn-cibseven-community</id>
+      <name>CIB seven Community Repository</name>
+      <url>https://artifacts.cibseven.org/repository/community</url>
     </repository>
-    -->
+    <repository>
+      <id>mvn-cibseven-community-snapshots</id>
+      <name>CIB seven Community Snapshots Repository</name>
+      <url>https://artifacts.cibseven.org/repository/community-snapshots</url>
+    </repository>
   </repositories>
 
   <build>
