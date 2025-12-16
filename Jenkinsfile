@@ -31,19 +31,24 @@ pipeline {
     // Parameter that can be changed in the Jenkins UI
     parameters {
         booleanParam(
-            name: 'INSTALL',
+            name: 'BUILD',
             defaultValue: true,
-            description: 'Build and test'
+            description: "  └─ 🔨 Build feature branch"
+        )
+        booleanParam(
+            name: 'VERIFY',
+            defaultValue: true,
+            description: "  └─ ✅ Execute Unit Tests"
         )
         booleanParam(
             name: 'DEPLOY_TO_ARTIFACTS',
             defaultValue: false,
-            description: 'Deploy artifacts to artifacts.cibseven.org'
+            description: '└─ 📦 Deploy to artifacts.cibseven.org'
         )
         booleanParam(
             name: 'DEPLOY_TO_MAVEN_CENTRAL',
             defaultValue: false,
-            description: 'Deploy artifacts to Maven Central'
+            description: '└─ 📤 Deploy artifacts to Maven Central'
         )
     }
 
@@ -93,18 +98,37 @@ pipeline {
             }
         }
 
-        stage('Maven install') {
+        stage('Build') {
             when {
-                expression { params.INSTALL }
+                anyOf {
+                    expression { params.INSTALL == true }
+                    expression { params.VERIFY == true }
+                }
             }
             steps {
                 script {
                     withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
-                        sh "mvn -T4 -Dbuild.number=${BUILD_NUMBER} install"
+                        sh "mvn -T4 -Dbuild.number=${BUILD_NUMBER} clean install -DskipTests"
                     }
-                    if (!params.DEPLOY_TO_ARTIFACTS && !params.DEPLOY_TO_MAVEN_CENTRAL) {
-                        junit allowEmptyResults: true, testResults: ConstantsInternal.MAVEN_TEST_RESULTS
+                }
+            }
+        }
+
+        stage('engine UNIT tests') {
+            when {
+                expression { params.VERIFY == true }
+            }
+            steps {
+                script {
+                    withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
+                        sh """
+                            mvn -f -Dbuild.number=${BUILD_NUMBER} \
+                                test \
+                                -Dmaven.test.failure.ignore=true
+                           """
                     }
+                    // publish test results
+                    junit allowEmptyResults: true, testResults: ConstantsInternal.MAVEN_TEST_RESULTS
                 }
             }
         }
@@ -126,7 +150,7 @@ pipeline {
                 }
             }
         }
-        
+ 
         stage('Deploy to Maven Central') {
             when {
                 allOf {
