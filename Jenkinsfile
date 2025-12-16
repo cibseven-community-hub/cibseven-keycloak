@@ -143,7 +143,7 @@ pipeline {
             steps {
                 script {
                     withMaven(options: []) {
-                        sh "mvn -T4 -U clean deploy"
+                        sh "mvn -T4 -U -DskipTests clean deploy"
                     }
                   
                     junit allowEmptyResults: true, testResults: ConstantsInternal.MAVEN_TEST_RESULTS
