@@ -96,7 +96,7 @@ For further details on how to setup a Keycloak Camunda Identity Service Client s
 
 The class ``KeycloakIdentityProvider.java`` in package ``org.cibseven.bpm.extension.keycloak.showcase.plugin`` will activate the plugin.
 
-The main configuration part in ``applicaton.yaml`` is as follows:
+The main configuration part in ``application.yaml`` is as follows:
 
 ```yml
 # Externalized Keycloak configuration
@@ -127,6 +127,53 @@ KEYCLOAK_URL_PLUGIN must have the `auth` path added to it, e.g. `http://localhos
 For configuration details of the plugin see documentation of [Keycloak Identity Provider Plugin](https://github.com/cibseven-community-hub/cibseven-keycloak) 
 
 ### OAuth2 SSO Configuration
+
+#### SSO for CIB seven webapp
+
+The CIB seven webclient manages SSO by its own, so we only need to configure the application yaml like follows:
+
+```yml
+# Externalized Keycloak configuration
+keycloak:
+  # SSO Authentication requests. Send by application as redirect to the browser
+  url.auth: ${KEYCLOAK_URL_AUTH:http://localhost:9000/auth}
+  # SSO Token requests. Send from the application to Keycloak
+  url.token: ${KEYCLOAK_URL_TOKEN:http://localhost:9000/auth}
+  # Keycloak Camunda Identity Client
+  client.id: ${KEYCLOAK_CLIENT_ID:camunda-identity-service}
+  client.secret: ${KEYCLOAK_CLIENT_SECRET:0F0yFyCvv2T901fvMSbKlAd7f8QkyxNg}
+
+cibseven:
+  webclient:
+    engineRest:
+      url: http://localhost:8080
+    authentication:
+      tokenValidMinutes: 30
+      tokenProlongMinutes: 10
+    sso: # 2
+      active: true
+      endpoints:
+        authorization: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/auth
+        token:  ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/token
+        jwks: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/certs
+        user: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/users
+      clientId: ${keycloak.client.id}
+      clientSecret: ${keycloak.client.secret}
+      scopes: openid email profile # 3
+      userIdProperty: preferred_username
+      userNameProperty: name
+      accessTokenToEngineRest: true
+    bpm:
+     provider: org.cibseven.webapp.providers.SevenProvider
+    user:
+     provider: org.cibseven.webapp.auth.KeycloakUserProvider # 1
+```
+
+1. Using KeycloakUserProvider.
+2. SSO login enabled for CIB seven webclient.
+3. Defines the openid, profile and email scopes.
+
+#### SSO for legacy Camunda webapp
 
 For OAuth2 SSO configuration see package ``org.cibseven.bpm.extension.keycloak.showcase.sso``.
 
