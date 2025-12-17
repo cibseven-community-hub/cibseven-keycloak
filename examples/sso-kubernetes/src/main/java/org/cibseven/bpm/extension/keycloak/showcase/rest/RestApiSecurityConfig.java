@@ -22,7 +22,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 import org.cibseven.bpm.engine.IdentityService;
 
 /**
- * Optional Security Configuration for Camunda REST Api.
+ * Optional Security Configuration for CIB seven REST Api.
  */
 @Configuration
 @ConditionalOnProperty(name = "rest.security.enabled", havingValue = "true", matchIfMissing = true)

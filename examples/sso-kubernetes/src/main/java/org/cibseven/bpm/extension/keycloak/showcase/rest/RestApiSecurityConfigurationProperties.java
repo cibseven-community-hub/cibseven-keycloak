@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Complete Security Configuration Properties for Camunda REST Api.
+ * Complete Security Configuration Properties for CIB seven REST Api.
  */
 @Component
 @ConfigurationProperties(prefix = "rest.security")

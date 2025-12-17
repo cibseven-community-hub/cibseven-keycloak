@@ -26,7 +26,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 /**
- * Camunda Web application SSO configuration for usage with KeycloakIdentityProviderPlugin.
+ * Legacy Camunda Web application SSO configuration for usage with KeycloakIdentityProviderPlugin.
  */
 @ConditionalOnMissingClass("org.springframework.test.context.junit.jupiter.SpringExtension")
 @EnableWebSecurity
