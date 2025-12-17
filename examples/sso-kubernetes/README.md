@@ -128,6 +128,10 @@ For configuration details of the plugin see documentation of [Keycloak Identity 
 
 ### OAuth2 SSO Configuration
 
+Again: if you run Keycloak in the new Quarkus distribution, please be aware that `/auth` has been removed from the default context path.
+In case you run the derived legacy image still containing Wildfly (e.g. `gunnaraccso/keycloak.server:19.0.3-legacy`), your
+KEYCLOAK_URL_AUTH /  KEYCLOAK_URL_TOKEN must have the `auth` path added to them, e.g. `http://localhost:9000/auth`.
+
 #### SSO for CIB seven webapp
 
 The CIB seven webclient manages SSO by its own, so we only need to configure the application yaml like follows:
@@ -211,10 +215,6 @@ spring.security.oauth2:
         # - preferred_username -> useUsernameAsCamundaUserId=true
         user-name-attribute: preferred_username
 ```
-
-Again: if you run Keycloak in the new Quarkus distribution, please be aware that `/auth` has been removed from the default context path.
-In case you run the derived legacy image still containing Wildfly (e.g. `gunnaraccso/keycloak.server:19.0.3-legacy`), your
-KEYCLOAK_URL_AUTH /  KEYCLOAK_URL_TOKEN must have the `auth` path added to them, e.g. `http://localhost:9000/auth`.
 
 You'll find the security configuraton setup in ``WebAppSecurityConfig``. Please be aware of the ``KeycloakAuthenticationProvider`` which is the bridge between Spring Security and CIB seven.
 
