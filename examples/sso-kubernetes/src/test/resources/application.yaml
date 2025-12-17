@@ -7,7 +7,7 @@ camunda.bpm:
 spring.datasource:
   url: jdbc:h2:mem:camunda-spring-boot-test;DB_CLOSE_ON_EXIT=false
 
-# Camunda Rest API
+# CIB seven Rest API
 rest.security:
   enabled: false
   provider: keycloak

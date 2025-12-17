@@ -32,7 +32,7 @@ public class RestApiSecurityConfig {
 	@Inject
 	private RestApiSecurityConfigurationProperties configProps;
 	
-	/** Access to Camunda's Identity Service. */
+	/** Access to CIB seven's Identity Service. */
 	@Inject
 	private IdentityService identityService;
 	

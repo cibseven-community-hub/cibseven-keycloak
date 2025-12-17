@@ -55,7 +55,7 @@ spring.security:
 
 logging.level.org.springframework.security: DEBUG
 
-# Camunda Rest API
+# CIB seven Rest API
 rest.security:
   enabled: true
   provider: keycloak
