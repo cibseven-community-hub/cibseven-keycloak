@@ -15,8 +15,7 @@
 
 	<properties>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
-
-		<!--<docker.imageName>gunnaraccso/camunda-showcase-keycloak:${project.version}</docker.imageName>-->
+		<docker.imageName>cibseven/cibseven-showcase-keycloak:${project.version}</docker.imageName>
 	</properties>
 
 	<dependencies>
