@@ -5,6 +5,8 @@ This configuration does not rely on server side and does not require sticky sess
 
 It is based on javascript integration from Keycloak (keycloak.js) and an interceptor for the legacy Camunda Cockpit.
 
+**Heads up!**: CIB seven webapp follows a stateless communication pattern, which is why we rely on a JWT to secure communication between the frontend and the webclient.
+
 **Beware:** this is still in incubation / preview status and might change in the future.
 
 ## Prerequisites
@@ -172,7 +174,7 @@ camunda.bpm:
 
 Now you are ready for the last step: activate Keycloak on the client side.
 
-### Enabling `keycloak.js` in CIB seven Web Applications
+### Enabling `keycloak.js` in the legacy Camunda Web Applications
 
 You'll find the custom configuration for the legacy Camunda Cockpit UI under ``src/main/resources/META-INF/resources/webjars/camunda``. Rely on this directory as a base directory for the next step. 
 
