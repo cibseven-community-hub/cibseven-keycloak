@@ -129,7 +129,7 @@ pipeline {
                     withEnv(testEnvVars){
                         withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
                             sh """
-                                mvn -f -Dbuild.number=${BUILD_NUMBER} \
+                                mvn -Dbuild.number=${BUILD_NUMBER} \
                                     test \
                                     -Dmaven.test.failure.ignore=true
                                """
