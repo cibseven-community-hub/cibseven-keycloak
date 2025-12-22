@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.cibseven.bpm.springboot</groupId>
             <artifactId>cibseven-bpm-spring-boot-starter-webapp</artifactId>
-            <!-- 			<artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
+            <!-- <artifactId>cibseven-bpm-spring-boot-starter-webapp-ee</artifactId> -->
         </dependency>
 
         <!-- Spring Security -->
@@ -96,26 +96,6 @@
             to the jar -->
 
     </dependencies>
-
-    <repositories>
-        <!-- Cibseven repo-->
-
-
-
-        <!--
-        <repository>
-            <id>camunda-bpm-nexus</id>
-            <name>Camunda Maven Repository</name>
-            <url>https://artifacts.camunda.com/artifactory/public/</url>
-        </repository> -->
-        <!--
-        <repository>
-            <id>camunda-bpm-ee</id>
-            <name>Camunda Enterprise Maven Repository</name>
-            <url>https://artifacts.camunda.com/artifactory/camunda-bpm-ee/</url>
-        </repository>
-        -->
-    </repositories>
 
     <build>
         <finalName>${project.artifactId}</finalName>

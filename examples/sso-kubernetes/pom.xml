@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>org.cibseven.bpm.springboot</groupId>
 			<artifactId>cibseven-bpm-spring-boot-starter-webapp</artifactId>
-			<!-- <artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
+			<!-- <artifactId>cibseven-bpm-spring-boot-starter-webapp-ee</artifactId> -->
 		</dependency>
 
 		<dependency>
@@ -77,11 +77,11 @@
 			<artifactId>cibseven-engine-plugin-spin</artifactId>
 		</dependency>
 
-        <!-- Monitoring dependencies -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+		<!-- Monitoring dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
 		<!-- Required in order to run with Java > 8 -->
 		<dependency>
@@ -100,11 +100,11 @@
 			<artifactId>cibseven-bpm-assert</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-          <groupId>org.cibseven.bpm</groupId>
-          <artifactId>cibseven-bpm-junit5</artifactId>
-          <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.cibseven.bpm</groupId>
+			<artifactId>cibseven-bpm-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- java util logging => slf4j -->
 		<dependency>
@@ -123,31 +123,10 @@
 		<dependency>
 			<groupId>com.github.dasniko</groupId>
 			<artifactId>testcontainers-keycloak</artifactId>
-			<version>3.2.0</version>
+			<version>3.4.0</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
-
-	<repositories>
-		<!-- Cibseven repo -->
-		<!-- 2025.06.26, Oleg: ToDo - delete, probably not needed, since inherited from root pom-->
-
-
-		<!--
-		<repository>
-			<id>camunda-bpm-nexus</id>
-			<name>Camunda Maven Repository</name>
-			<url>https://artifacts.camunda.com/artifactory/public/</url>
-		</repository>-->
-		<!-- 
-		<repository>
-			<id>camunda-bpm-ee</id>
-			<name>Camunda Enterprise Maven Repository</name>
-			<url>https://artifacts.camunda.com/artifactory/camunda-bpm-ee/</url>
-		</repository>
-		-->
-	</repositories>
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -210,15 +189,15 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.5.4</version>
+						<version>3.5.4</version>
 						<configuration>
 						</configuration>
 						<dependencies>
-						    <dependency>
-						        <groupId>org.junit.jupiter</groupId>
-						        <artifactId>junit-jupiter-engine</artifactId>
-						        <version>6.0.0</version>
-						    </dependency>
+							<dependency>
+								<groupId>org.junit.jupiter</groupId>
+								<artifactId>junit-jupiter-engine</artifactId>
+								<version>6.0.0</version>
+							</dependency>
 						</dependencies>
 					</plugin>
 				</plugins>
