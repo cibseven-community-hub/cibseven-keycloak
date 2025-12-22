@@ -126,7 +126,7 @@ pipeline {
                     testEnvVars = ['DOCKER_HOST=tcp://localhost:2375']
                     log.info 'Docker-in-Docker container detected - configuring DOCKER_HOST for Testcontainers'
                     
-                    withEnvs(testEnvVars){
+                    withEnv(testEnvVars){
                         withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
                             sh """
                                 mvn -f -Dbuild.number=${BUILD_NUMBER} \
