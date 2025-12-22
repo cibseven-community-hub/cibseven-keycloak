@@ -15,6 +15,7 @@ import org.cibseven.bpm.engine.runtime.ProcessInstance;
 import org.cibseven.bpm.engine.task.Task;
 import org.cibseven.bpm.extension.keycloak.showcase.ProcessConstants.Variable;
 import org.cibseven.bpm.extension.keycloak.showcase.plugin.KeycloakIdentityProvider;
+import org.cibseven.bpm.extension.keycloak.showcase.test.KeycloakTestcontainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
@@ -37,6 +39,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@ContextConfiguration(initializers = KeycloakTestcontainer.Initializer.class)
 public class ProcessIntegrationTest {
 
 	private static final String PROCESS_DEFINITION_KEY = "camunda.showcase";
