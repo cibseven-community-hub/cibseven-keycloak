@@ -23,6 +23,7 @@ pipeline {
         kubernetes {
             yaml BuildPodCreator.cibStandardPod()
                     .withContainerFromName(pipelineParams.mvnContainerName)
+                    .withDockerDindContainer()
                     .asYaml()
             defaultContainer pipelineParams.mvnContainerName
         }
@@ -114,18 +115,25 @@ pipeline {
             }
         }
 
-        stage('engine UNIT tests') {
+        stage('Tests') {
             when {
                 expression { params.VERIFY == true }
             }
             steps {
                 script {
-                    withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
-                        sh """
-                            mvn -f -Dbuild.number=${BUILD_NUMBER} \
-                                test \
-                                -Dmaven.test.failure.ignore=true
-                           """
+                    // Automatically configure DOCKER_HOST for Testcontainers if DinD container is present
+                    def testEnvVars = []
+                    testEnvVars = ['DOCKER_HOST=tcp://localhost:2375']
+                    log.info 'Docker-in-Docker container detected - configuring DOCKER_HOST for Testcontainers'
+                    
+                    withEnvs(testEnvVars){
+                        withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
+                            sh """
+                                mvn -f -Dbuild.number=${BUILD_NUMBER} \
+                                    test \
+                                    -Dmaven.test.failure.ignore=true
+                               """
+                        }
                     }
                     // publish test results
                     junit allowEmptyResults: true, testResults: ConstantsInternal.MAVEN_TEST_RESULTS

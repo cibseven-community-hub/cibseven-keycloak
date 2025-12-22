@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
@@ -39,11 +40,19 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
+
+import dasniko.testcontainers.keycloak.KeycloakContainer;
+
 /**
  * Super class for all Identity Provider Tests.
  */
 public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProcessEngineTestCase {
 
+	private static final KeycloakContainer keycloakContainer;
 	// Keycloak configuration
 	// - in your maven build set as environment variables in order to override defaults
 	// - if not available defaults will be taken from keycloak-default.properties
@@ -80,32 +89,53 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 	
 	protected static String CLIENT_SECRET = null;
 	
-	// creates Keycloak setup only once per test run
 	static {
-		// read keycloak configuration
-		ResourceBundle defaults = ResourceBundle.getBundle("keycloak-default");
-		KEYCLOAK_URL = getConfigValue(defaults, "keycloak.url").replaceAll("/+$", "");
-		KEYCLOAK_ADMIN_USER = getConfigValue(defaults, "keycloak.admin.user");
-		KEYCLOAK_ADMIN_PASSWORD = getConfigValue(defaults, "keycloak.admin.password");
-		KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
-				Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
-		
-		// setup 
 		try {
+			// Start Keycloak container
+			ResourceBundle defaults = ResourceBundle.getBundle("keycloak-default");			
+	
+			KEYCLOAK_URL = getConfigValue(defaults, "keycloak.url").replaceAll("/+$", "");
+			// extract host and port
+			URI uri = URI.create(KEYCLOAK_URL);
+			String host = uri.getHost();
+			int hostPort = uri.getPort(); 
+			int containerPort = 8080;
+			int containerAdminPort =9000;
+			int hostAdminPort = 9000;
+			
+			KEYCLOAK_ADMIN_USER = getConfigValue(defaults, "keycloak.admin.user");
+			KEYCLOAK_ADMIN_PASSWORD = getConfigValue(defaults, "keycloak.admin.password");
+			KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
+					Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
+			
+			keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.4.5")
+					.withEnv("KC_BOOTSTRAP_ADMIN_USERNAME", KEYCLOAK_ADMIN_USER)
+					.withEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", KEYCLOAK_ADMIN_PASSWORD)
+					.withExposedPorts(containerPort,containerAdminPort) // Keycloak’s container ports
+					.withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(
+							HostConfig.newHostConfig().withPortBindings(
+							new PortBinding(Ports.Binding.bindPort(hostPort), new ExposedPort(containerPort)),
+							new PortBinding(Ports.Binding.bindPort(hostAdminPort), new ExposedPort(containerAdminPort)))))
+					.withReuse(false); // true only for local dev
+			keycloakContainer.start();
+
 			setupRestTemplate();
 			setupKeycloak();
+
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to setup keycloak test realm", e);
 		}
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				try {
-					tearDownKeycloak();
-				} catch (JSONException e) {
-					throw new RuntimeException("Error tearing down keycloak test realm", e);
+	
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				if (keycloakContainer != null) {
+					keycloakContainer.stop();
 				}
+				tearDownKeycloak();
+			} catch (Exception e) {
+				throw new RuntimeException("Error tearing down keycloak test realm", e);
 			}
-		});
+		}));
 	}
 
 	/**
@@ -208,15 +238,15 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 		
 		// Authenticate Admin
 		HttpHeaders headers = authenticateKeycloakAdmin();
-		
-	    // Create test realm
+
+		// Create test realm
 		String realm = "test";
 		createRealm(headers, realm);
 
-	    // Create Client
+		// Create Client
 		CLIENT_SECRET = createClient(headers, realm, "camunda-identity-service", "http://localhost:8080/login");
 
-	    // Create groups
+		// Create groups
 		GROUP_ID_ADMIN = createGroup(headers, realm, "camunda-admin", true);
 		GROUP_ID_TEAMLEAD = createGroup(headers, realm, "teamlead", false);
 		GROUP_ID_MANAGER = createGroup(headers, realm, "manager", false);
@@ -315,21 +345,21 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 	protected static HttpHeaders authenticateKeycloakAdmin() throws JSONException {
 		// Authenticate Admin
 		HttpHeaders headers = new HttpHeaders();
-	    headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-	    HttpEntity<String> request = new HttpEntity<>(
-	    		"client_id=admin-cli"
-	    		+ "&username=" + KEYCLOAK_ADMIN_USER + "&password=" + KEYCLOAK_ADMIN_PASSWORD
-	    		+ "&grant_type=password",
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+		HttpEntity<String> request = new HttpEntity<>(
+				"client_id=admin-cli"
+				+ "&username=" + KEYCLOAK_ADMIN_USER + "&password=" + KEYCLOAK_ADMIN_PASSWORD
+				+ "&grant_type=password",
 				headers);
-	    ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_URL + "/realms/master/protocol/openid-connect/token", request, String.class);
-	    assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-	    JSONObject json = new JSONObject(response.getBody());
+		ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_URL + "/realms/master/protocol/openid-connect/token", request, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		JSONObject json = new JSONObject(response.getBody());
 		String accessToken = json.getString("access_token");
 		String tokenType = json.getString("token_type");
 
 		// Create REST request header
 		headers = new HttpHeaders();
-	    headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE + ";charset="+StandardCharsets.UTF_8.name());
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE + ";charset="+StandardCharsets.UTF_8.name());
 		headers.add(HttpHeaders.AUTHORIZATION, tokenType + " " + accessToken);
 
 		return headers;
