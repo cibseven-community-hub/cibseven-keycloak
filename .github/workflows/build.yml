@@ -42,7 +42,7 @@ jobs:
     - name: Run Maven
       env:
         KEYCLOAK_URL: http://localhost:${{ job.services.keycloak.ports[8080] }}/auth        
-        KEYCLOAK_ADMIN_USER: ${{ job.services.keycloak.env.KEYCLOAK_USER }}
-        KEYCLOAK_ADMIN_PASSWORD: ${{ job.services.keycloak.env.KEYCLOAK_PASSWORD }}
+        KEYCLOAK_USER: ${{ job.services.keycloak.env.KEYCLOAK_USER }}
+        KEYCLOAK_PASSWORD: ${{ job.services.keycloak.env.KEYCLOAK_PASSWORD }}
         KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: false
       run: mvn -B clean install com.mycila:license-maven-plugin:check
