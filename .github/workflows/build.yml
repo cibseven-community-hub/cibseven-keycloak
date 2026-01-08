@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     services:
       keycloak:
-        image: quay.io/keycloak/19.0.3-legacy
+        image: quay.io/keycloak/keycloak:19.0.3-legacy
         env:
           KEYCLOAK_USER: keycloak
           KEYCLOAK_PASSWORD: keycloak1!
