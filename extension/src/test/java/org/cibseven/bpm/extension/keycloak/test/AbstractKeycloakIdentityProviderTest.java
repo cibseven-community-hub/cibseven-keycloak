@@ -107,7 +107,7 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 				LOG.info("Using external Keycloak instance at: {}", KEYCLOAK_URL);
 			} else {
 				// Start Testcontainer (Jenkins/local development) 
-				String KEYCLOAK_URL = getConfigValue(defaults, "keycloak.url").replaceAll("/+$", "");
+				KEYCLOAK_URL = getConfigValue(defaults, "keycloak.url").replaceAll("/+$", "");
 				// extract host and port
 				URI uri = URI.create(KEYCLOAK_URL);
 				String host = uri.getHost();
