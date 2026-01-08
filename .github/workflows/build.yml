@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-24.04
     services:
       keycloak:
-        image: quay.io/keycloak/keycloak:26.4.5
+        image: quay.io/keycloak/19.0.3-legacy
         env:
-          KC_BOOTSTRAP_ADMIN_USERNAME: keycloak
-          KC_BOOTSTRAP_ADMIN_PASSWORD: keycloak1!
+          KEYCLOAK_USER: keycloak
+          KEYCLOAK_PASSWORD: keycloak1!
           DB_VENDOR: h2
         ports:
           - 8080:8080
           - 9000:9000
-        options: --health-cmd "curl -f http://localhost:8080/health/ready || exit 1" --health-interval 10s --health-timeout 5s --health-retries 5
+        options: --health-cmd "curl -Iks http://localhost:8080" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - name: Checkout
       uses: actions/checkout@v6
@@ -38,11 +38,11 @@ jobs:
     - name: Wait for Keycloak to be ready
       run: |
         echo "Waiting for Keycloak to be ready..."
-        timeout 120 bash -c 'until curl -f http://localhost:8080/health/ready; do sleep 2; done'
+        timeout 120 bash -c 'until curl -f http://localhost:8080/auth; do sleep 2; done'
     - name: Run Maven
       env:
         KEYCLOAK_URL: https://localhost:${{ job.services.keycloak.ports[8080] }}/auth        
-        KEYCLOAK_ADMIN_USER: ${{ job.services.keycloak.env.KC_BOOTSTRAP_ADMIN_USERNAME }}
-        KEYCLOAK_ADMIN_PASSWORD: ${{ job.services.keycloak.env.KC_BOOTSTRAP_ADMIN_PASSWORD }}
+        KEYCLOAK_ADMIN_USER: ${{ job.services.keycloak.env.KEYCLOAK_USER }}
+        KEYCLOAK_ADMIN_PASSWORD: ${{ job.services.keycloak.env.KEYCLOAK_PASSWORD }}
         KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: false
       run: mvn -B clean install com.mycila:license-maven-plugin:check
