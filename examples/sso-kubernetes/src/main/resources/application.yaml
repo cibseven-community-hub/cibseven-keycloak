@@ -36,6 +36,7 @@ keycloak:
 
 cibseven:
   webclient:
+    services.basePath: /webapp/services/v1
     engineRest:
       url: http://localhost:8080
     authentication:
@@ -55,9 +56,9 @@ cibseven:
       userNameProperty: name
       accessTokenToEngineRest: true
     bpm:
-     provider: org.cibseven.webapp.providers.SevenProvider
+      provider: org.cibseven.webapp.providers.SevenProvider
     user:
-     provider: org.cibseven.webapp.auth.KeycloakUserProvider
+      provider: org.cibseven.webapp.auth.KeycloakUserProvider
 
 server:
   port: 8080
@@ -97,6 +98,7 @@ logging.level.org.springframework.security: DEBUG
 
 # CIB seven Rest API
 rest.security:
+  # CIB seven webapp supports communication with the secured engine REST ONLY from version 2.1.0 onward
   enabled: true
   provider: keycloak
   required-audience: camunda-rest-api
