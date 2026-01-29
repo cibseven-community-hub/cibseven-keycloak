@@ -14,6 +14,7 @@ import groovy.transform.Field
 @Field Map pipelineParams = [
     pom: ConstantsInternal.DEFAULT_MAVEN_POM_PATH,
     mvnContainerName: Constants.MAVEN_JDK_17_CONTAINER,
+    dindEnabled: true,
     uiParamPresets: [:],
     testMode: false
 ]
@@ -23,7 +24,7 @@ pipeline {
         kubernetes {
             yaml BuildPodCreator.cibStandardPod()
                     .withContainerFromName(pipelineParams.mvnContainerName)
-                    .withDockerDindContainer()
+                    .withDindContainer(enabled: pipelineParams.dindEnabled)
                     .asYaml()
             defaultContainer pipelineParams.mvnContainerName
         }
