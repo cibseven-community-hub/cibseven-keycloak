@@ -5,7 +5,7 @@ This configuration does not rely on server side and does not require sticky sess
 
 It is based on javascript integration from Keycloak (keycloak.js) and an interceptor for the legacy Camunda Cockpit.
 
-**Heads up!**: CIB seven webapp follows a stateless communication pattern, which is why we rely on a JWT to secure communication between the frontend and the webclient.
+<span style="color:green;"><strong>Heads up!</strong></span>: CIB seven webapp follows a stateless communication pattern, which is why we rely on a JWT to secure communication between the frontend and the webclient.
 
 **Beware:** this is still in incubation / preview status and might change in the future.
 
