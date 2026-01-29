@@ -27,7 +27,7 @@
 
     <!-- versions -->
     <version.cibseven>2.0.0</version.cibseven>
-    <version.springBoot>3.5.6</version.springBoot>
+    <version.springBoot>3.4.4</version.springBoot> 
     <version.commons-codec>1.18.0</version.commons-codec>
 
   </properties>
