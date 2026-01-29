@@ -16,8 +16,10 @@ jobs:
           KEYCLOAK_USER: keycloak
           KEYCLOAK_PASSWORD: keycloak1!
           DB_VENDOR: h2
-        ports: [ 8443/tcp ]
-        options: --health-cmd "curl -Iks https://localhost:8443" --health-interval 10s --health-timeout 5s --health-retries 5
+        ports:
+          - 8080:8080
+          - 9000:9000
+        options: --health-cmd "curl -Iks http://localhost:8080" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - name: Checkout
       uses: actions/checkout@v6
@@ -33,8 +35,14 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
+    - name: Wait for Keycloak to be ready
+      run: |
+        echo "Waiting for Keycloak to be ready..."
+        timeout 120 bash -c 'until curl -f http://localhost:8080/auth; do sleep 2; done'
     - name: Run Maven
       env:
-        KEYCLOAK_URL: https://localhost:${{ job.services.keycloak.ports[8443] }}/auth
+        KEYCLOAK_URL: http://localhost:${{ job.services.keycloak.ports[8080] }}/auth        
+        KEYCLOAK_USER: keycloak
+        KEYCLOAK_PASSWORD: keycloak1!
         KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: false
       run: mvn -B clean install com.mycila:license-maven-plugin:check

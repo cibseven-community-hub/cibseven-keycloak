@@ -94,21 +94,34 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 			// Start Keycloak container
 			ResourceBundle defaults = ResourceBundle.getBundle("keycloak-default");			
 	
-			KEYCLOAK_URL = getConfigValue(defaults, "keycloak.url").replaceAll("/+$", "");
-			// extract host and port
-			URI uri = URI.create(KEYCLOAK_URL);
-			String host = uri.getHost();
-			int hostPort = uri.getPort(); 
-			int containerPort = 8080;
-			int containerAdminPort =9000;
-			int hostAdminPort = 9000;
-			
-			KEYCLOAK_ADMIN_USER = getConfigValue(defaults, "keycloak.admin.user");
-			KEYCLOAK_ADMIN_PASSWORD = getConfigValue(defaults, "keycloak.admin.password");
-			KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
-					Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
-			
-			keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.4.5")
+			// Check if KEYCLOAK_URL is already provided (GitHub Actions case)
+			String externalKeycloakUrl = System.getenv("KEYCLOAK_URL");
+
+			if (externalKeycloakUrl != null && !externalKeycloakUrl.isEmpty()) {
+				// Use external Keycloak instance (GitHub Actions)
+				KEYCLOAK_URL = externalKeycloakUrl.replaceAll("/+$", "");
+				KEYCLOAK_ADMIN_USER = System.getenv("KEYCLOAK_USER");
+				KEYCLOAK_ADMIN_PASSWORD = System.getenv("KEYCLOAK_PASSWORD");
+				KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY = Boolean.valueOf(System.getenv("KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY"));
+				keycloakContainer = null;
+				LOG.info("Using external Keycloak instance at: {}", KEYCLOAK_URL);
+			} else {
+				// Start Testcontainer (Jenkins/local development) 
+				KEYCLOAK_URL = getConfigValue(defaults, "keycloak.url").replaceAll("/+$", "");
+				// extract host and port
+				URI uri = URI.create(KEYCLOAK_URL);
+				String host = uri.getHost();
+				int hostPort = uri.getPort(); 
+				int containerPort = 8080;
+				int containerAdminPort =9000;
+				int hostAdminPort = 9000;
+				
+				KEYCLOAK_ADMIN_USER = getConfigValue(defaults, "keycloak.admin.user");
+				KEYCLOAK_ADMIN_PASSWORD = getConfigValue(defaults, "keycloak.admin.password");
+				KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
+						Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
+				
+				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.4.5")
 					.withEnv("KC_BOOTSTRAP_ADMIN_USERNAME", KEYCLOAK_ADMIN_USER)
 					.withEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", KEYCLOAK_ADMIN_PASSWORD)
 					.withExposedPorts(containerPort,containerAdminPort) // Keycloak’s container ports
@@ -117,7 +130,9 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 							new PortBinding(Ports.Binding.bindPort(hostPort), new ExposedPort(containerPort)),
 							new PortBinding(Ports.Binding.bindPort(hostAdminPort), new ExposedPort(containerAdminPort)))))
 					.withReuse(false); // true only for local dev
-			keycloakContainer.start();
+				keycloakContainer.start();
+				LOG.info("Started Keycloak Testcontainer at: {}", KEYCLOAK_URL);
+			}
 
 			setupRestTemplate();
 			setupKeycloak();
