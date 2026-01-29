@@ -169,7 +169,13 @@ pipeline {
             }
             steps {
                 script {
-                    withMaven(options: []) {
+                    // Automatically configure DOCKER_HOST for Testcontainers if DinD container is present
+                    def testEnvVars = []
+                    testEnvVars = ['DOCKER_HOST=tcp://localhost:2375']
+                    log.info 'Docker-in-Docker container detected - configuring DOCKER_HOST for Testcontainers'
+                    
+                    withEnv(testEnvVars){
+                      withMaven(options: []) {
                         withCredentials([file(credentialsId: 'credential-cibseven-community-gpg-private-key', variable: 'GPG_KEY_FILE'), string(credentialsId: 'credential-cibseven-community-gpg-passphrase', variable: 'GPG_KEY_PASS')]) {
                             sh "gpg --batch --import ${GPG_KEY_FILE}"
     
@@ -184,6 +190,7 @@ pipeline {
                                     -Dskip.cibseven.release="${!params.DEPLOY_TO_ARTIFACTS}"
                             """
                         }
+                      }
                     }
 
                     junit allowEmptyResults: true, testResults: ConstantsInternal.MAVEN_TEST_RESULTS
