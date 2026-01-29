@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.camunda.bpm.extension.examples</groupId>
-        <artifactId>camunda-platform-7-keycloak-examples</artifactId>
-        <version>7.24.1-SNAPSHOT</version>
+        <groupId>org.cibseven.bpm.extension.examples</groupId>
+        <artifactId>cibseven-keycloak-examples</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>camunda-platform-7-keycloak-examples-jwt</artifactId>
+    <artifactId>cibseven-keycloak-examples-jwt</artifactId>
 
-    <name>Camunda Platform 7 - engine plugins - identity - keycloak - jwt example - showcase</name>
-    <description>Showcase for using Camunda Platform 7 Keycloak Identity Provider with JWT auth</description>
+    <name>CIB seven - engine plugins - identity - keycloak - jwt example - showcase</name>
+    <description>Showcase for using CIB seven Keycloak Identity Provider with JWT auth</description>
 
     <properties>
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -19,9 +19,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.camunda.bpm.springboot</groupId>
-            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-            <!-- 			<artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
+            <groupId>org.cibseven.bpm.springboot</groupId>
+            <artifactId>cibseven-bpm-spring-boot-starter-webapp</artifactId>
+            <!-- <artifactId>cibseven-bpm-spring-boot-starter-webapp-ee</artifactId> -->
         </dependency>
 
         <!-- Spring Security -->
@@ -36,13 +36,13 @@
 
         <!-- Keycloak Identity Prover Plugin  -->
         <dependency>
-            <groupId>org.camunda.bpm.extension</groupId>
-            <artifactId>camunda-platform-7-keycloak</artifactId>
+            <groupId>org.cibseven.bpm.extension</groupId>
+            <artifactId>cibseven-keycloak</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.camunda.bpm.extension</groupId>
-            <artifactId>camunda-platform-7-keycloak-jwt</artifactId>
+            <groupId>org.cibseven.bpm.extension</groupId>
+            <artifactId>cibseven-keycloak-jwt</artifactId>
         </dependency>
 
         <!-- Database -->
@@ -75,14 +75,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.camunda.bpm</groupId>
-            <artifactId>camunda-bpm-assert</artifactId>
+            <groupId>org.cibseven.bpm</groupId>
+            <artifactId>cibseven-bpm-assert</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.camunda.bpm.extension</groupId>
-            <artifactId>camunda-bpm-junit5</artifactId>
-            <version>1.1.0</version>
+            <groupId>org.cibseven.bpm</groupId>
+            <artifactId>cibseven-bpm-junit5</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -97,21 +96,6 @@
             to the jar -->
 
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>camunda-bpm-nexus</id>
-            <name>Camunda Maven Repository</name>
-            <url>https://artifacts.camunda.com/artifactory/public/</url>
-        </repository>
-        <!--
-        <repository>
-            <id>camunda-bpm-ee</id>
-            <name>Camunda Enterprise Maven Repository</name>
-            <url>https://artifacts.camunda.com/artifactory/camunda-bpm-ee/</url>
-        </repository>
-        -->
-    </repositories>
 
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -136,7 +120,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.1</version>
                 <configuration>
-                    <mainClass>org.camunda.bpm.extension.keycloak.org.camunda.bpm.extension.keycloak.showcase.CamundaApplication</mainClass>
+                    <mainClass>org.cibseven.bpm.extension.keycloak.org.cibseven.bpm.extension.keycloak.showcase.CamundaApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

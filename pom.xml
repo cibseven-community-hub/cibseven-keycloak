@@ -5,17 +5,19 @@
   <!-- Attention: to properly separate dependencies of extension and examples, do not define any dependencies/management here! -->
 
   <parent>
-    <groupId>org.camunda.community</groupId>
-    <artifactId>community-hub-release-parent</artifactId>
-    <version>2.1.0</version>
+    <groupId>org.cibseven.community</groupId>
+    <artifactId>release-parent</artifactId>
+    <version>1.1.0</version>
+    <!-- do not remove empty tag -->
+    <relativePath />
   </parent>
 
-  <groupId>org.camunda.bpm.extension</groupId>
-  <artifactId>camunda-platform-7-keycloak-root</artifactId>
-  <version>7.24.1-SNAPSHOT</version>
+  <groupId>org.cibseven.bpm.extension</groupId>
+  <artifactId>cibseven-keycloak-root</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Camunda Platform 7 - engine plugins - identity - keycloak - root</name>
-  <description>A Camunda 7 Identity Provider Plugin for Keycloak</description>
+  <name>CIB seven - engine plugins - identity - keycloak - root</name>
+  <description>A CIB seven Identity Provider Plugin for Keycloak</description>
   
   <properties>
     <version.java>17</version.java>
@@ -24,13 +26,10 @@
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
 
     <!-- versions -->
-	<version.camunda>7.24.0</version.camunda>
-    <!-- <version.camunda>7.24.0-ee</version.camunda> -->
-	<version.springBoot>3.5.8</version.springBoot>
-    <version.commons-codec>1.20.0</version.commons-codec>
+    <version.cibseven>2.0.0</version.cibseven>
+    <version.springBoot>3.4.4</version.springBoot> 
+    <version.commons-codec>1.18.0</version.commons-codec>
 
-    <!-- Nexus Staging -->
-    <plugin.version.nexus-staging>1.7.0</plugin.version.nexus-staging>
   </properties>
 
   <licenses>
@@ -41,27 +40,11 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:camunda/camunda-platform-7-keycloak.git</connection>
-    <url>scm:git:git@github.com:camunda/camunda-platform-7-keycloak.git</url>
-    <developerConnection>scm:git:git@github.com:camunda/camunda-platform-7-keycloak.git</developerConnection>
+    <connection>scm:git@github.com:cibseven-community-hub/cibseven-keycloak.git</connection>
+    <url>scm:git@github.com:cibseven-community-hub/cibseven-keycloak.git</url>
+    <developerConnection>scm:git@github.com:cibseven-community-hub/cibseven-keycloak.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
-
-  <!-- repositories used for distribution of releases and snapshots, DO NOT CHANGE -->
-  <distributionManagement>
-    <repository>
-      <id>camunda-nexus</id>
-      <name>camunda bpm community extensions</name>
-      <url>https://artifacts.camunda.com/artifactory/camunda-bpm-community-extensions/</url>
-    </repository>
-    <snapshotRepository>
-      <id>camunda-nexus</id>
-      <name>camunda bpm community extensions snapshots</name>
-      <url>https://artifacts.camunda.com/artifactory/camunda-bpm-community-extensions-snapshots/</url>
-      <!-- for maven 2 compatibility -->
-      <uniqueVersion>true</uniqueVersion>
-    </snapshotRepository>
-  </distributionManagement>
 
   <modules>
     <module>extension</module>
@@ -74,9 +57,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.camunda.bpm</groupId>
-        <artifactId>camunda-bom</artifactId>
-        <version>${version.camunda}</version>
+        <groupId>org.cibseven.bpm</groupId>
+        <artifactId>cibseven-bom</artifactId>
+        <version>${version.cibseven}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -89,14 +72,14 @@
       </dependency>
       <!-- modules -->
       <dependency>
-        <groupId>org.camunda.bpm.extension</groupId>
-        <artifactId>camunda-platform-7-keycloak</artifactId>
+        <groupId>org.cibseven.bpm.extension</groupId>
+        <artifactId>cibseven-keycloak</artifactId>
         <version>${project.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
-        <groupId>org.camunda.bpm.extension</groupId>
-        <artifactId>camunda-platform-7-keycloak-jwt</artifactId>
+        <groupId>org.cibseven.bpm.extension</groupId>
+        <artifactId>cibseven-keycloak-jwt</artifactId>
         <version>${project.version}</version>
         <scope>provided</scope>
       </dependency>
@@ -104,19 +87,22 @@
   </dependencyManagement>
 
   <repositories>
-    <!-- Camunda Repository -->
+    <!-- Cibseven Repository -->
     <repository>
-        <id>camunda-bpm</id>
-        <name>Camunda Enterprise Maven Repository</name>
-        <url>https://artifacts.camunda.com/artifactory/camunda-bpm/</url>
+      <id>mvn-cibseven-public</id>
+      <name>CIB seven Public Repository</name>
+      <url>https://artifacts.cibseven.org/repository/public</url>
     </repository>
-    <!-- Camunda EE Repository 
     <repository>
-        <id>camunda-bpm-ee</id>
-        <name>Camunda Enterprise Maven Repository</name>
-        <url>https://artifacts.camunda.com/artifactory/camunda-bpm-ee/</url>
+      <id>mvn-cibseven-community</id>
+      <name>CIB seven Community Repository</name>
+      <url>https://artifacts.cibseven.org/repository/community</url>
     </repository>
-    -->
+    <repository>
+      <id>mvn-cibseven-community-snapshots</id>
+      <name>CIB seven Community Snapshots Repository</name>
+      <url>https://artifacts.cibseven.org/repository/community-snapshots</url>
+    </repository>
   </repositories>
 
   <build>
@@ -139,24 +125,15 @@
           <legacyMode>true</legacyMode>
           <additionalDependencies>
             <dependency>
-              <groupId>org.camunda.bpm</groupId>
-              <artifactId>camunda-engine</artifactId>
-              <version>${version.camunda}</version>
+              <groupId>org.cibseven.bpm</groupId>
+              <artifactId>cibseven-engine</artifactId>
+              <version>${version.cibseven}</version>
             </dependency>
           </additionalDependencies>
         </configuration>
       </plugin>
     </plugins>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>${plugin.version.nexus-staging}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
 </project>

@@ -1,15 +1,15 @@
 # Installation on Tomcat
-This document describes the installation of the **Keycloak Camunda Identity Provider Plugin** on a full distribution for Apache Tomcat.
+This document describes the installation of the **Keycloak CIB seven Identity Provider Plugin** on a full distribution for Apache Tomcat.
 
-## Camunda Installation on Apache Tomcat
+## CIB seven Installation on Apache Tomcat
 
-For information on how to install Camunda on Apache Tomcat carefully read and follow the installation reference within the Camunda Docs: [https://docs.camunda.org/manual/latest/installation/full/tomcat/](https://docs.camunda.org/manual/latest/installation/full/tomcat/)
+For information on how to install CIB seven on Apache Tomcat carefully read and follow the installation reference within the CIB seven Docs: [https://docs.cibseven.org/manual/latest/installation/full/tomcat/](https://docs.cibseven.org/manual/latest/installation/full/tomcat/)
 
 ## Install the Keycloak Identity Provider Plugin
 
-In order to install the Keycloak Identity Provider Plugin you have to download the library ``camunda-platform-7-keycloak-all-x.y.z.jar`` and copy it to ``$TOMCAT_HOME/lib``.
+In order to install the Keycloak Identity Provider Plugin you have to download the library ``cibseven-keycloak-all-x.y.z.jar`` and copy it to ``$TOMCAT_HOME/lib``.
 
-Please be aware that you must use the provided ``*-all-x.y.z.jar`` (fat jar, packaged with the "**-all**" extension) including transitive dependencies. The additional library is available since version ``1.3.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.camunda.bpm.extension%20AND%20a:camunda-platform-7-keycloak-all).
+Please be aware that you must use the provided ``*-all-x.y.z.jar`` (fat jar, packaged with the "**-all**" extension) including transitive dependencies. The additional library is available since version ``1.3.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.bpm.extension%20AND%20a:cibseven-keycloak-all).
 
 For the records - included dependencies are:
 
@@ -40,7 +40,7 @@ xsi:schemaLocation="http://www.camunda.org/schema/1.0/BpmPlatform http://www.cam
     <plugins>
         ...
         <plugin>
-        <class>org.camunda.bpm.extension.keycloak.plugin.KeycloakIdentityProviderPlugin</class>
+        <class>org.cibseven.bpm.extension.keycloak.plugin.KeycloakIdentityProviderPlugin</class>
         <properties>
             <property name="keycloakIssuerUrl">https://somehost:8443/auth/realms/camunda</property>
             <property name="keycloakAdminUrl">https://somehost:8443/auth/admin/realms/camunda</property>
@@ -58,4 +58,4 @@ xsi:schemaLocation="http://www.camunda.org/schema/1.0/BpmPlatform http://www.cam
 </bpm-platform>
 ```
 
-For a full documentation of all configuration properties see the documentation of the [Keycloak Identity Provider Plugin](https://github.com/camunda-community-hub/camunda-platform-7-keycloak) itself.
+For a full documentation of all configuration properties see the documentation of the [Keycloak Identity Provider Plugin](https://github.com/cibseven-community-hub/cibseven-keycloak) itself.

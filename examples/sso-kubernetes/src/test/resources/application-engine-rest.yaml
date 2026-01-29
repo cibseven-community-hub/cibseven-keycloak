@@ -55,13 +55,13 @@ spring.security:
 
 logging.level.org.springframework.security: DEBUG
 
-# Camunda Rest API
+# CIB seven Rest API
 rest.security:
   enabled: true
   provider: keycloak
   required-audience: camunda-rest-api
 
-# Camunda Keycloak Identity Provider Plugin
+# CIB seven Keycloak Identity Provider Plugin
 plugin.identity.keycloak:
   keycloakIssuerUrl: ${keycloak.url.plugin}/realms/camunda
   keycloakAdminUrl: ${keycloak.url.plugin}/admin/realms/camunda

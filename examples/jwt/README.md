@@ -1,15 +1,17 @@
-# Camunda Platform 7 - Example for Spring Boot & Keycloak Identity Provider - JWT extension
+# CIB seven - Example for Spring Boot & Keycloak Identity Provider - JWT extension
 
-This is the alternative way, how Keycloak can be configured with client side JWT authentication in Camunda Cockpit.
+This is the alternative way, how Keycloak can be configured with client side JWT authentication in the legacy Camunda Cockpit.
 This configuration does not rely on server side and does not require sticky sessions on your environment.
 
-It is based on javascript integration from Keycloak (keycloak.js) and an interceptor for Camunda Cockpit.
+It is based on javascript integration from Keycloak (keycloak.js) and an interceptor for the legacy Camunda Cockpit.
+
+<span style="color:green;"><strong>Heads up!</strong></span>: CIB seven webapp follows a stateless communication pattern, which is why we rely on a JWT to secure communication between the frontend and the webclient.
 
 **Beware:** this is still in incubation / preview status and might change in the future.
 
 ## Prerequisites
 
-1. Configure Keycloak as described in the main part - [here](https://github.com/camunda-community-hub/camunda-platform-7-keycloak/tree/master/examples#prerequisites-in-your-keycloak-realm)
+1. Configure Keycloak as described in the main part - [here](https://github.com/cibseven-community-hub/cibseven-keycloak/tree/master/examples#prerequisites-in-your-keycloak-realm)
 2. Add additional client for UI access - ``camunda-jwt``
 
 You need to set:
@@ -25,16 +27,16 @@ allowing us to extract groups from the corresponding token claim.
 ![JWT client mappers](docs/camunda-jwt-mappers.PNG)
 ![JWT client scopes](docs/camunda-jwt-group-mapper.PNG)
 
-## Usage with Camunda Spring Boot
+## Usage with CIB seven Spring Boot
 
-The integration basics are absolutely the same as described in the main part - [here](https://github.com/camunda-community-hub/camunda-platform-7-keycloak/tree/master/examples#usage-with-camunda-spring-boot)
+The integration basics are absolutely the same as described in the main part - [here](https://github.com/cibseven-community-hub/cibseven-keycloak/tree/master/examples#usage-with-cib-seven-spring-boot)
 
 Your dependency for the Keycloak Identity Provider still is:
 
 ```xml
     <dependency>
-        <groupId>org.camunda.bpm.extension</groupId>
-        <artifactId>camunda-platform-7-keycloak</artifactId>
+        <groupId>org.cibseven.bpm.extension</groupId>
+        <artifactId>cibseven-keycloak</artifactId>
     </dependency>
 ```
 
@@ -46,8 +48,8 @@ First of all we need an additional dependency which does most of the magic:
 
 ```xml
     <dependency>
-        <groupId>org.camunda.bpm.extension</groupId>
-        <artifactId>camunda-platform-7-keycloak-jwt</artifactId>
+        <groupId>org.cibseven.bpm.extension</groupId>
+        <artifactId>cibseven-keycloak-jwt</artifactId>
     </dependency>
 ```
 
@@ -109,7 +111,7 @@ public class WebAppSecurityConfig {
 
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new KeycloakJwtAuthenticationFilter(camundaWebappPath));
-        filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "org.camunda.bpm.extension.keycloak.auth.KeycloakJwtAuthenticationProvider"));
+        filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "org.cibseven.bpm.extension.keycloak.auth.KeycloakJwtAuthenticationProvider"));
         filterRegistration.setName(AUTHENTICATION_FILTER_NAME);
         filterRegistration.setOrder(AFTER_SPRING_SECURITY_FILTER_CHAIN_ORDER);
         filterRegistration.addUrlPatterns(camundaWebappPath + API_FILTER_PATTERN);
@@ -133,13 +135,13 @@ public class WebAppSecurityConfig {
 ```
 
 The Web Security configuration is responsible for
-* Registering the `KeycloakJwtAuthenticationFilter` with the `KeycloakJwtAuthenticationProvider` acting as a bridge between Keycloak and Camunda.
+* Registering the `KeycloakJwtAuthenticationFilter` with the `KeycloakJwtAuthenticationProvider` acting as a bridge between Keycloak and CIB seven.
 * Registering the `KeycloakConfigurationFilterRegistrationBean` which provides access to the Keycloak server configuration.
 
 Finally you have to configure the Keycloak Server and Client as well as the Spring Security JWT resource server by providing issuer URI as follows:
 
 ```yml
-# Camunda Cockpit JWT Plugin
+# CIB seven Cockpit JWT Plugin
 plugin.cockpit.keycloak:
   keycloakUrl: https://<your-keycloak-server>
   realm: camunda
@@ -153,9 +155,9 @@ spring.security:
         issuer-uri: https://<your-keycloak-server>/realms/camunda
 ```
 
-Also for camunda 7.18+ you need to configure CSP header:
+Also you need to configure CSP header:
 ```yml
-#CSP header configuration (Camunda 7.18+)
+#CSP header configuration
 camunda.bpm:
   webapp:
     header-security:
@@ -172,11 +174,11 @@ camunda.bpm:
 
 Now you are ready for the last step: activate Keycloak on the client side.
 
-### Enabling `keycloak.js` in Camunda Web Applications
+### Enabling `keycloak.js` in the legacy Camunda Web Applications
 
-You'll find the custom configuration for Camunda Cockpit UI under ``src/main/resources/META-INF/resources/webjars/camunda``. Rely on this directory as a base directory for the next step. 
+You'll find the custom configuration for the legacy Camunda Cockpit UI under ``src/main/resources/META-INF/resources/webjars/camunda``. Rely on this directory as a base directory for the next step. 
 
-To enable the JWT authorization plugin on the client side you have to provide a custom ``config.js`` file, located in the ``app/{admin|cockpit|tasklist|welcome}/scripts/`` directory of the Camunda webapps. It simply configures a custom authentication script:
+To enable the JWT authorization plugin on the client side you have to provide a custom ``config.js`` file, located in the ``app/{admin|cockpit|tasklist|welcome}/scripts/`` directory of the CIB seven webapps. It simply configures a custom authentication script:
 
 ```javascript
 export default {
