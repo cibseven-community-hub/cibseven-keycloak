@@ -55,9 +55,9 @@ cibseven:
       userNameProperty: name
       accessTokenToEngineRest: true
     bpm:
-     provider: org.cibseven.webapp.providers.SevenProvider
+      provider: org.cibseven.webapp.providers.SevenProvider
     user:
-     provider: org.cibseven.webapp.auth.KeycloakUserProvider
+      provider: org.cibseven.webapp.auth.KeycloakUserProvider
 
 server:
   port: 8080
