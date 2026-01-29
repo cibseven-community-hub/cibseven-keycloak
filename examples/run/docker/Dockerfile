@@ -1,5 +1,5 @@
-# Get Camunda-run as base image
-FROM cibseven/cibseven:run-2.1.0
+# Get cibseven-run as base image
+FROM cibseven/cibseven:run-2.0.0
 
 # The Version of the Keycloak Identity Provider to use
 ENV IDENTITY_PROVIDER_VERSION=2.0.0
