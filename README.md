@@ -1,5 +1,5 @@
 # CIB seven - Keycloak Identity Provider Plugin
-[![CIB seven 2.0.0](https://img.shields.io/badge/CIB%20seven-2.0.0-orange.svg)](https://docs.cibseven.org/manual/2.0/)
+[![CIB seven 2.1.0](https://img.shields.io/badge/CIB%20seven-2.1.0-orange.svg)](https://docs.cibseven.org/manual/2.1/)
 [![Maven Central](https://img.shields.io/maven-central/v/org.cibseven.bpm.extension/cibseven-keycloak?label=Maven%20Central)](https://central.sonatype.com/artifact/org.cibseven.bpm.extension/cibseven-keycloak)
  [![Apache License V.2](https://img.shields.io/badge/license-Apache%20V.2-blue.svg)](./LICENSE)
 
@@ -17,8 +17,8 @@ This plugin provides the basis for using Keycloak as Identity Management solutio
 **Beware: in case you want to use Keycloak's advanced login capabilities for social connections you must configure SSO as well.**
 Password grant exchanges are only supported for Keycloak's internally managed users and users of an LDAP / Keberos User federation. Hence without SSO you will only be able to login with users managed by such connections.
 
-Current version: `2.0.0`<br >
-Latest tests with: Keycloak `26.1.2`, `19.0.3-legacy`, CIB seven `2.0.0`
+Current version: `2.1.0`<br >
+Latest tests with: Keycloak `26.1.2`, `19.0.3-legacy`, CIB seven `2.1.0`
 
 #### Features
 Changes in version `2.0.0`
@@ -58,7 +58,7 @@ Maven Dependencies:
 <dependency>
     <groupId>org.cibseven.bpm.extension</groupId>
     <artifactId>cibseven-keycloak</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
