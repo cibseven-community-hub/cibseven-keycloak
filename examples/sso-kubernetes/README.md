@@ -149,6 +149,8 @@ keycloak:
 
 cibseven:
   webclient:
+    services:
+      basePath: /webapp/services/v1
     engineRest:
       url: http://localhost:8080
     authentication:
@@ -168,9 +170,9 @@ cibseven:
       userNameProperty: name
       accessTokenToEngineRest: false # 4
     bpm:
-     provider: org.cibseven.webapp.providers.SevenProvider
+      provider: org.cibseven.webapp.providers.SevenProvider
     user:
-     provider: org.cibseven.webapp.auth.KeycloakUserProvider # 1
+      provider: org.cibseven.webapp.auth.KeycloakUserProvider # 1
 ```
 
 1. Using KeycloakUserProvider.
@@ -220,6 +222,8 @@ spring.security.oauth2:
 You'll find the security configuraton setup in ``WebAppSecurityConfig``. Please be aware of the ``KeycloakAuthenticationProvider`` which is the bridge between Spring Security and CIB seven.
 
 ### Optional Security for the REST API of CIB seven
+
+<span style="color:red;"><strong>Heads up!</strong>: CIB seven webapp supports communication with the secured engine REST <strong>only</strong> from version 2.1.0 onward.</span>
 
 In order to secure REST API of CIB seven we're using standard JWT combined with Keycloaks JWKS capabilities. Which implies
 
