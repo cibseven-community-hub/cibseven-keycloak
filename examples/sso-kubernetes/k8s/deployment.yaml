@@ -20,7 +20,7 @@ spec:
       spec:
          containers:
          - name: keycloak-showcase
-           image: cibseven/cibseven-showcase-keycloak:2.0.0
+           image: cibseven/cibseven-showcase-keycloak:2.1.0
            ports:
            - containerPort: 8080
            env:
