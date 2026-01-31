@@ -168,6 +168,7 @@ cibseven:
       scopes: openid email profile # 3
       userIdProperty: preferred_username
       userNameProperty: name
+      accessTokenToEngineRest: false # 4
     bpm:
       provider: org.cibseven.webapp.providers.SevenProvider
     user:
@@ -177,6 +178,7 @@ cibseven:
 1. Using KeycloakUserProvider.
 2. SSO login enabled for CIB seven webclient.
 3. Defines the openid, profile and email scopes.
+4. Only to be enabled when using SSO and securing engine REST with OAuth2
 
 #### SSO for legacy Camunda webapp
 
@@ -240,6 +242,16 @@ rest.security:
   provider: keycloak
   required-audience: camunda-rest-api
 ```
+
+To enable the CIB seven webapp to use OAuth2 when communicating with the engine REST API, we need to add the following webclient property in ``application.yaml``:
+
+```yml
+cibseven:
+  webclient:
+    sso:
+      accessTokenToEngineRest: true
+```
+
 
 To induce keycloak to include the expected audience claim in delivered tokens, we configure a custom Client Scope named ``camunda-rest-api``:
 ![KeycloakClientScope](docs/Keycloak-Client-Scope.PNG)
