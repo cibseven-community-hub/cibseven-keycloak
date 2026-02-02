@@ -52,6 +52,11 @@ pipeline {
             defaultValue: false,
             description: '└─ 📤 Deploy artifacts to Maven Central'
         )
+        booleanParam(
+            name: 'DEPLOY_DOCKER_HUB',
+            defaultValue: false,
+            description: '└─ 🐳 Build and push showcase image to Docker Hub'
+        )
     }
 
     options {
@@ -194,6 +199,32 @@ pipeline {
                     }
 
                     junit allowEmptyResults: true, testResults: ConstantsInternal.MAVEN_TEST_RESULTS
+                }
+            }
+        }
+
+        stage('Deploy to Docker Hub') {
+            when {
+                expression { params.DEPLOY_DOCKER_HUB == true }
+            }
+            steps {
+                script {
+                    def testEnvVars = ['DOCKER_HOST=tcp://localhost:2375']
+                    log.info 'Building and pushing showcase image to Docker Hub'
+                    
+                    withEnv(testEnvVars){
+                        withMaven(options: []) {
+                            withCredentials([usernamePassword(credentialsId: 'credential-dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                                sh """
+                                    cd examples/sso-kubernetes
+                                    docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+                                    mvn -DskipTests spring-boot:build-image
+                                    docker push cibseven/cibseven-showcase-keycloak:${mavenProjectInformation.version}
+                                    docker logout
+                                """
+                            }
+                        }
+                    }
                 }
             }
         }
