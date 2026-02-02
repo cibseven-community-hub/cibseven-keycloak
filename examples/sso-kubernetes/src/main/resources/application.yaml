@@ -79,7 +79,7 @@ spring.security:
           client-id: ${keycloak.client.id}
           client-secret: ${keycloak.client.secret}
           authorization-grant-type: authorization_code
-          redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+          redirect-uri: "{baseUrl}/camunda/{action}/oauth2/code/{registrationId}"
           scope: openid, profile, email
       provider:
         keycloak:

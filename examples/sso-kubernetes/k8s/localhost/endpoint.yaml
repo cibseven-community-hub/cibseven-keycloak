@@ -11,4 +11,4 @@ ports:
     port: 80
 endpoints:
   - addresses:
-      - "172.30.240.1"
+      - "192.168.49.2"
