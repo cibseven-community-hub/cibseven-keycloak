@@ -141,11 +141,7 @@
 						<enabled>true</enabled>
 					</layers>
 					<image>
-						<!--
-						<builder>paketobuildpacks/builder:tiny</builder>
-						-->
 						<buildpacks>
-							<buildpack>gcr.io/paketo-buildpacks/adoptium</buildpack>
 							<buildpack>paketo-buildpacks/java</buildpack>
 						</buildpacks>
 						<env>
