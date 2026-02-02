@@ -1,0 +1,56 @@
+name: Build and publish to Docker Hub
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: maven
+
+      - name: Validate Docker Hub credentials
+        run: |
+          if [[ -z "${{ secrets.DOCKER_HUB_USERNAME }}" || -z "${{ secrets.DOCKER_HUB_PASSWORD }}" ]]; then
+            echo "DOCKER_HUB_USERNAME/DOCKER_HUB_PASSWORD secrets are required."
+            exit 1
+          fi
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Build and push Docker image
+        working-directory: examples/sso-kubernetes
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          mvn -DskipTests spring-boot:build-image \
+            -Dspring-boot.build-image.imageName=cibseven/cibseven-showcase-keycloak:${VERSION}
+          
+          docker push cibseven/cibseven-showcase-keycloak:${VERSION}
+          
+          if [[ ! "$VERSION" =~ -SNAPSHOT$ ]]; then
+            docker tag cibseven/cibseven-showcase-keycloak:${VERSION} cibseven/cibseven-showcase-keycloak:latest
+            docker push cibseven/cibseven-showcase-keycloak:latest
+          fi
