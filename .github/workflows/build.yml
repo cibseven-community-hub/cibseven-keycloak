@@ -12,6 +12,7 @@ jobs:
     services:
       keycloak:
         image: quay.io/keycloak/keycloak:26.1.2
+        command: start-dev
         env:
           KEYCLOAK_USER: keycloak
           KEYCLOAK_PASSWORD: keycloak1!
