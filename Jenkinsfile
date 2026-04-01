@@ -113,7 +113,9 @@ pipeline {
             steps {
                 script {
                     withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
-                        sh "mvn -T4 -Dbuild.number=${BUILD_NUMBER} clean install -DskipTests"
+                        dir('cibseven') {
+                            sh "mvn -T4 -Dbuild.number=${BUILD_NUMBER} clean install -DskipTests"
+                        }
                     }
                 }
             }
@@ -132,11 +134,13 @@ pipeline {
                     
                     withEnv(testEnvVars){
                         withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
-                            sh """
-                                mvn -Dbuild.number=${BUILD_NUMBER} \
-                                    test \
-                                    -Dmaven.test.failure.ignore=true
-                               """
+                            dir('cibseven') {
+                                sh """
+                                    mvn -Dbuild.number=${BUILD_NUMBER} \
+                                        test \
+                                        -Dmaven.test.failure.ignore=true
+                                   """
+                               }
                         }
                     }
                     // publish test results
