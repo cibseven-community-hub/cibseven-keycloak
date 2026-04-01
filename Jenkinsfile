@@ -91,14 +91,29 @@ pipeline {
 
                     log.info "Build Project: ${mavenProjectInformation.groupId}:${mavenProjectInformation.artifactId}, ${mavenProjectInformation.name} with version ${mavenProjectInformation.version}"
 
-                    // Avoid Git "dubious ownership" error in checked out repository. Needed in
-                    // build containers with newer Git versions. Originates from Jenkins running
-                    // pipeline as root but repository being owned by user 1000. For more, see
-                    // https://stackoverflow.com/questions/72978485/git-submodule-update-failed-with-fatal-detected-dubious-ownership-in-repositor
-                    sh "mkdir -p cibseven"
-                    sh "chown 1000:1000 cibseven"
-                    sh "git config --global --add safe.directory \$(pwd)/cibseven"
-                    checkout changelog: false, poll: false, scm: scmGit(branches: [[name: 'cibseven-testcontainers-update']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "cibseven"]], userRemoteConfigs: [[credentialsId: 'credential-github-cibseven-access-token', url: 'https://github.com/cibseven-community-hub/cibseven-keycloak.git']])
+                    sh "rm -rf cibseven"
+                    
+                    dir('cibseven') {
+                       // Avoid Git "dubious ownership" error in checked out repository. Needed in
+                       // build containers with newer Git versions. Originates from Jenkins running
+                       // pipeline as root but repository being owned by user 1000. For more, see
+                       // https://stackoverflow.com/questions/72978485/git-submodule-update-failed-with-fatal-detected-dubious-ownership-in-repositor
+                       sh "mkdir -p ."
+                       sh "chown 1000:1000 cibseven"
+                       
+                       sh "git config --global --add safe.directory \$(pwd)"
+                       
+                       checkout([
+                          $class: 'GitSCM',
+                          branches: [[name: 'cibseven-testcontainers-update']],
+                          doGenerateSubmoduleConfigurations: false,
+                          extensions: [],
+                          userRemoteConfigs: [[
+                             credentialsId: 'credential-github-cibseven-access-token',
+                             url: 'https://github.com/cibseven-community-hub/cibseven-keycloak.git'
+                       ]]
+                ])
+                    }
                 }
             }
         }
