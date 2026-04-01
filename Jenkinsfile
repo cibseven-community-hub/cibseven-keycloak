@@ -99,7 +99,7 @@ pipeline {
                        // pipeline as root but repository being owned by user 1000. For more, see
                        // https://stackoverflow.com/questions/72978485/git-submodule-update-failed-with-fatal-detected-dubious-ownership-in-repositor
                        sh "mkdir -p ."
-                       sh "chown 1000:1000 cibseven"
+                       sh "chown 1000:1000 ."
                        
                        sh "git config --global --add safe.directory \$(pwd)"
                        
