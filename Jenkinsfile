@@ -95,7 +95,8 @@ pipeline {
                     // build containers with newer Git versions. Originates from Jenkins running
                     // pipeline as root but repository being owned by user 1000. For more, see
                     // https://stackoverflow.com/questions/72978485/git-submodule-update-failed-with-fatal-detected-dubious-ownership-in-repositor
-                    sh "git config --global --add safe.directory \$(pwd)"
+                    sh "git config --global --add safe.directory \$(pwd)/cibseven"
+                    checkout changelog: false, poll: false, scm: scmGit(branches: [[name: 'cibseven-testcontainers-update']], extensions: [[$class: 'RelativeTargetDirectory']], userRemoteConfigs: [[credentialsId: 'credential-github-cibseven-access-token', url: 'https://github.com/cibseven-community-hub/cibseven-keycloak.git']])
                 }
             }
         }
