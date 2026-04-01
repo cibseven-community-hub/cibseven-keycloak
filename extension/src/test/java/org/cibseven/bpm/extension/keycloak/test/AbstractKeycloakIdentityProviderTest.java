@@ -120,7 +120,7 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 				KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
 						Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
 				
-				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.4.5")
+				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.5.6")
 					.withAdminUsername(KEYCLOAK_ADMIN_USER)
 					.withAdminPassword(KEYCLOAK_ADMIN_PASSWORD)
 					.withExposedPorts(containerPort,containerAdminPort) // Keycloak’s container ports
