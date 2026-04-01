@@ -138,6 +138,7 @@ pipeline {
                     }
                     // publish test results
                     junit allowEmptyResults: true, testResults: ConstantsInternal.MAVEN_TEST_RESULTS
+                    archiveArtifacts artifacts: ConstantsInternal.MAVEN_TEST_RESULTS, allowEmptyArchive: true, fingerprint: true
                 }
             }
         }
