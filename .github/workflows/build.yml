@@ -18,7 +18,7 @@ jobs:
           -p 9000:9000 \
           -e KEYCLOAK_ADMIN=keycloak \
           -e KEYCLOAK_ADMIN_PASSWORD='keycloak1!' \
-          quay.io/keycloak/keycloak:26.1.2 start-dev --health-enabled=true
+          quay.io/keycloak/keycloak:26.5.6 start-dev --health-enabled=true
     - name: Checkout
       uses: actions/checkout@v6
     - name: Java setup
@@ -42,7 +42,7 @@ jobs:
       run: docker logs keycloak
     - name: Run Maven
       env:
-        KEYCLOAK_URL: http://localhost:8080/auth        
+        KEYCLOAK_URL: http://localhost:8080/        
         KEYCLOAK_USER: keycloak
         KEYCLOAK_PASSWORD: keycloak1!
         KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: false
