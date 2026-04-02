@@ -47,3 +47,14 @@ jobs:
         KEYCLOAK_PASSWORD: keycloak1!
         KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: false
       run: mvn -B clean install com.mycila:license-maven-plugin:check
+    - name: Upload Surefire Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: surefire-reports
+        path: |
+          **/target/surefire-reports/*.txt
+          **/target/surefire-reports/*.xml
+          **/target/keycloak-init-error.txt
+        if-no-files-found: ignore
+        retention-days: 4
