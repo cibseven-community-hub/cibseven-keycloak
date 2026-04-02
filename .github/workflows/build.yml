@@ -18,7 +18,7 @@ jobs:
           -p 9000:9000 \
           -e KEYCLOAK_ADMIN=keycloak \
           -e KEYCLOAK_ADMIN_PASSWORD='keycloak1!' \
-          quay.io/keycloak/keycloak:26.1.2 start-dev --health-enabled=true
+          quay.io/keycloak/keycloak:26.5.6 start-dev --health-enabled=true
     - name: Checkout
       uses: actions/checkout@v6
     - name: Java setup
