@@ -9,18 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    services:
-      keycloak:
-        image: quay.io/keycloak/keycloak:26.1.2
-        env:
-          KEYCLOAK_USER: keycloak
-          KEYCLOAK_PASSWORD: keycloak1!
-          DB_VENDOR: h2
-        ports:
-          - 8080:8080
-          - 9000:9000
-        options: --health-cmd "curl -Iks http://localhost:8080" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
+    - name: Start Keycloak
+      run: |
+        docker run -d \
+          --name keycloak \
+          -p 8080:8080 \
+          -p 9000:9000 \
+          -e KEYCLOAK_ADMIN=keycloak \
+          -e KEYCLOAK_ADMIN_PASSWORD='keycloak1!' \
+          quay.io/keycloak/keycloak:26.1.2 start-dev
     - name: Checkout
       uses: actions/checkout@v6
     - name: Java setup
