@@ -45,7 +45,7 @@ jobs:
         KEYCLOAK_URL: http://localhost:8080/        
         KEYCLOAK_USER: keycloak
         KEYCLOAK_PASSWORD: keycloak1!
-        KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: false
+        KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: true
       run: mvn -B clean install com.mycila:license-maven-plugin:check
     - name: Upload Surefire Reports
       if: always()
