@@ -9,18 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    services:
-      keycloak:
-        image: quay.io/keycloak/keycloak:19.0.3-legacy
-        env:
-          KEYCLOAK_USER: keycloak
-          KEYCLOAK_PASSWORD: keycloak1!
-          DB_VENDOR: h2
-        ports:
-          - 8080:8080
-          - 9000:9000
-        options: --health-cmd "curl -Iks http://localhost:8080" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
+    - name: Start Keycloak
+      run: |
+        docker run -d \
+          --name keycloak \
+          -p 8080:8080 \
+          -p 9000:9000 \
+          -e KEYCLOAK_ADMIN=keycloak \
+          -e KEYCLOAK_ADMIN_PASSWORD='keycloak1!' \
+          quay.io/keycloak/keycloak:26.5.6 start-dev --health-enabled=true
     - name: Checkout
       uses: actions/checkout@v6
     - name: Java setup
@@ -38,11 +36,25 @@ jobs:
     - name: Wait for Keycloak to be ready
       run: |
         echo "Waiting for Keycloak to be ready..."
-        timeout 120 bash -c 'until curl -f http://localhost:8080/auth; do sleep 2; done'
+        timeout 120 bash -c 'until curl -f http://localhost:9000/health/ready; do sleep 2; done'
+    - name: Keycloak logs (debug)
+      if: failure()
+      run: docker logs keycloak
     - name: Run Maven
       env:
-        KEYCLOAK_URL: http://localhost:${{ job.services.keycloak.ports[8080] }}/auth        
+        KEYCLOAK_URL: http://localhost:8080/        
         KEYCLOAK_USER: keycloak
         KEYCLOAK_PASSWORD: keycloak1!
-        KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: false
+        KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY: true
       run: mvn -B clean install com.mycila:license-maven-plugin:check
+    - name: Upload Surefire Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: surefire-reports
+        path: |
+          **/target/surefire-reports/*.txt
+          **/target/surefire-reports/*.xml
+          **/target/keycloak-init-error.txt
+        if-no-files-found: ignore
+        retention-days: 4

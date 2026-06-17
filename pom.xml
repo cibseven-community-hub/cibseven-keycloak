@@ -27,8 +27,12 @@
 
     <!-- versions -->
     <version.cibseven>2.1.0</version.cibseven>
-    <version.springBoot>3.5.6</version.springBoot>
+    <version.springBoot>3.5.6</version.springBoot> 
     <version.commons-codec>1.18.0</version.commons-codec>
+    <!-- Keycloak Testcontainer versions should match Testcontainers version -->
+    <!-- https://github.com/dasniko/testcontainers-keycloak/blob/main/docs/versions.md -->
+    <version.testcontainers>2.0.3</version.testcontainers>
+    <version.keycloak-testcontainers>4.1.1</version.keycloak-testcontainers>
 
   </properties>
 
@@ -63,12 +67,27 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+      <!-- testcontainers-bom must come BEFORE spring-boot-dependencies to win over its pin -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${version.testcontainers}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${version.springBoot}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- testcontainers-keycloak -->
+      <dependency>
+        <groupId>com.github.dasniko</groupId>
+        <artifactId>testcontainers-keycloak</artifactId>
+        <version>${version.keycloak-testcontainers}</version>
+        <scope>test</scope>
       </dependency>
       <!-- modules -->
       <dependency>

@@ -96,7 +96,6 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 	
 			// Check if KEYCLOAK_URL is already provided (GitHub Actions case)
 			String externalKeycloakUrl = System.getenv("KEYCLOAK_URL");
-
 			if (externalKeycloakUrl != null && !externalKeycloakUrl.isEmpty()) {
 				// Use external Keycloak instance (GitHub Actions)
 				KEYCLOAK_URL = externalKeycloakUrl.replaceAll("/+$", "");
@@ -121,9 +120,9 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 				KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
 						Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
 				
-				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.4.5")
-					.withEnv("KC_BOOTSTRAP_ADMIN_USERNAME", KEYCLOAK_ADMIN_USER)
-					.withEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", KEYCLOAK_ADMIN_PASSWORD)
+				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.5.6")
+					.withAdminUsername(KEYCLOAK_ADMIN_USER)
+					.withAdminPassword(KEYCLOAK_ADMIN_PASSWORD)
 					.withExposedPorts(containerPort,containerAdminPort) // Keycloak’s container ports
 					.withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(
 							HostConfig.newHostConfig().withPortBindings(
@@ -133,11 +132,23 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 				keycloakContainer.start();
 				LOG.info("Started Keycloak Testcontainer at: {}", KEYCLOAK_URL);
 			}
-
 			setupRestTemplate();
 			setupKeycloak();
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			// real cause is hidden behind NoClassDefFoundError 
+			// dump to a file so it survives Surefire stream capturing
+			try {
+				java.io.File dumpFile = new java.io.File("target/keycloak-init-error.txt");
+				try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(dumpFile, true))) {
+					pw.println("=== " + new java.util.Date() + " ===");
+					e.printStackTrace(pw);
+					if (e.getCause() != null) {
+						pw.println("--- Caused by ---");
+						e.getCause().printStackTrace(pw);
+					}
+				}
+			} catch (java.io.IOException ignored) {}
 			throw new RuntimeException("Unable to setup keycloak test realm", e);
 		}
 	
