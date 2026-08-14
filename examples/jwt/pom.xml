@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.cibseven.bpm.extension.examples</groupId>
+        <groupId>org.cibseven.community.keycloak.examples</groupId>
         <artifactId>cibseven-keycloak-examples</artifactId>
         <version>2.2.0-SNAPSHOT</version>
     </parent>
@@ -36,12 +36,12 @@
 
         <!-- Keycloak Identity Prover Plugin  -->
         <dependency>
-            <groupId>org.cibseven.bpm.extension</groupId>
+            <groupId>org.cibseven.community.keycloak</groupId>
             <artifactId>cibseven-keycloak</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.cibseven.bpm.extension</groupId>
+            <groupId>org.cibseven.community.keycloak</groupId>
             <artifactId>cibseven-keycloak-jwt</artifactId>
         </dependency>
 
