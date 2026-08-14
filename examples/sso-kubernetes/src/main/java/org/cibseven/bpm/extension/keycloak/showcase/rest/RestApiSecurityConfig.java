@@ -15,9 +15,8 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import static org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.pathPattern;
 
 import org.cibseven.bpm.engine.IdentityService;
 
@@ -53,8 +52,8 @@ public class RestApiSecurityConfig {
 				"spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
 
 		return http
-				.securityMatcher(antMatcher("/engine-rest/**"))
-				.csrf(csrf -> csrf.ignoringRequestMatchers(antMatcher("/engine-rest/**")))
+				.securityMatcher(pathPattern("/engine-rest/**"))
+				.csrf(csrf -> csrf.ignoringRequestMatchers(pathPattern("/engine-rest/**")))
 				.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
 				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
 						.jwt(jwt -> jwt

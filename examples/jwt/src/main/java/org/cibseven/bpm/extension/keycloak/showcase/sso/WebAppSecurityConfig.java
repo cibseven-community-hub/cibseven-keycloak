@@ -19,7 +19,7 @@ import org.springframework.web.context.request.RequestContextListener;
 
 import java.util.Collections;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import static org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.pathPattern;
 
 /**
  * Camunda Web application SSO configuration for usage with KeycloakIdentityProviderPlugin.
@@ -44,16 +44,16 @@ public class WebAppSecurityConfig {
 		String path = camundaBpmProperties.getWebapp().getLegacyApplicationPath();
 		return http
 				.csrf(csrf -> csrf
-						.ignoringRequestMatchers(antMatcher(path + "/api/**"), antMatcher("/engine-rest/**")))
+						.ignoringRequestMatchers(pathPattern(path + "/api/**"), pathPattern("/engine-rest/**")))
 				.securityMatcher("/**")
 				.authorizeHttpRequests(authz -> authz
-						.requestMatchers(antMatcher("/")).permitAll()
-						.requestMatchers(antMatcher(path + "/app/**")).permitAll()
-						.requestMatchers(antMatcher(path + "/assets/**")).permitAll()
-						.requestMatchers(antMatcher(path + "/lib/**")).permitAll()
-						.requestMatchers(antMatcher(path + "/api/engine/engine/**")).permitAll()
-						.requestMatchers(antMatcher(path + "/api/*/plugin/*/static/app/plugin.css")).permitAll()
-						.requestMatchers(antMatcher(path + "/api/*/plugin/*/static/app/plugin.js")).permitAll()
+						.requestMatchers(pathPattern("/")).permitAll()
+						.requestMatchers(pathPattern(path + "/app/**")).permitAll()
+						.requestMatchers(pathPattern(path + "/assets/**")).permitAll()
+						.requestMatchers(pathPattern(path + "/lib/**")).permitAll()
+						.requestMatchers(pathPattern(path + "/api/engine/engine/**")).permitAll()
+						.requestMatchers(pathPattern(path + "/api/*/plugin/*/static/app/plugin.css")).permitAll()
+						.requestMatchers(pathPattern(path + "/api/*/plugin/*/static/app/plugin.js")).permitAll()
 						.anyRequest().authenticated())
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
 				.build();

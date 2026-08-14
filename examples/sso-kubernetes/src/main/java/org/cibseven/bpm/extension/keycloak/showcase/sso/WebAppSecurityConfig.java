@@ -23,7 +23,7 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import static org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.pathPattern;
 
 /**
  * Legacy Camunda Web application SSO configuration for usage with KeycloakIdentityProviderPlugin.
@@ -55,20 +55,20 @@ public class WebAppSecurityConfig {
               })
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers(
-                        antMatcher(legacyWebappPath + "/api/**"),
-                        antMatcher("/engine-rest/**")))
+                        pathPattern(legacyWebappPath + "/api/**"),
+                        pathPattern("/engine-rest/**")))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
-                        antMatcher(legacyWebappPath + "/assets/**"),
-                        antMatcher(legacyWebappPath + "/app/**"),
-                        antMatcher(legacyWebappPath + "/api/**"),
-                        antMatcher(legacyWebappPath + "/lib/**"))
+                        pathPattern(legacyWebappPath + "/assets/**"),
+                        pathPattern(legacyWebappPath + "/app/**"),
+                        pathPattern(legacyWebappPath + "/api/**"),
+                        pathPattern(legacyWebappPath + "/lib/**"))
                 .authenticated()
                 .anyRequest()
                 .permitAll())
             .oauth2Login(withDefaults())
             .logout(logout -> logout
-                .logoutRequestMatcher(antMatcher(legacyWebappPath + "/app/**/logout"))
+                .logoutRequestMatcher(pathPattern(legacyWebappPath + "/app/*/*/logout"))
                 .logoutSuccessHandler(keycloakLogoutHandler)
             )
             .build();
