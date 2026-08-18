@@ -54,7 +54,6 @@
     <module>extension</module>
     <module>extension-run</module>
     <module>extension-all</module>
-    <module>extension-jwt</module>
     <module>examples</module>
   </modules>
   
@@ -93,12 +92,6 @@
       <dependency>
         <groupId>org.cibseven.bpm.extension</groupId>
         <artifactId>cibseven-keycloak</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.cibseven.bpm.extension</groupId>
-        <artifactId>cibseven-keycloak-jwt</artifactId>
         <version>${project.version}</version>
         <scope>provided</scope>
       </dependency>
