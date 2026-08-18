@@ -17,7 +17,6 @@
   
   <modules>
     <module>sso-kubernetes</module>
-    <module>jwt</module>
   </modules>
   
 </project>
