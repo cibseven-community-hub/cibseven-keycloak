@@ -21,13 +21,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.cibseven.bpm.springboot</groupId>
-			<artifactId>cibseven-bpm-spring-boot-starter-webapp</artifactId>
+			<artifactId>cibseven-bpm-spring-boot-starter-webapp-4</artifactId>
 			<!-- <artifactId>cibseven-bpm-spring-boot-starter-webapp-ee</artifactId> -->
 		</dependency>
 
 		<dependency>
 			<groupId>org.cibseven.bpm.springboot</groupId>
-			<artifactId>cibseven-bpm-spring-boot-starter-rest</artifactId>
+			<artifactId>cibseven-bpm-spring-boot-starter-rest-4</artifactId>
 		</dependency>
 
 		<!-- Spring Security -->
