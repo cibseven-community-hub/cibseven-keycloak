@@ -7,12 +7,12 @@
   <parent>
     <groupId>org.cibseven.community</groupId>
     <artifactId>release-parent</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <!-- do not remove empty tag -->
     <relativePath />
   </parent>
 
-  <groupId>org.cibseven.bpm.extension</groupId>
+  <groupId>org.cibseven.community.keycloak</groupId>
   <artifactId>cibseven-keycloak-root</artifactId>
   <version>2.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -26,8 +26,8 @@
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
 
     <!-- versions -->
-    <version.cibseven>2.1.0</version.cibseven>
-    <version.springBoot>3.5.6</version.springBoot> 
+    <version.cibseven>2.2.0</version.cibseven>
+    <version.springBoot>4.0.6</version.springBoot> 
     <version.commons-codec>1.18.0</version.commons-codec>
     <!-- Keycloak Testcontainer versions should match Testcontainers version -->
     <!-- https://github.com/dasniko/testcontainers-keycloak/blob/main/docs/versions.md -->
@@ -90,7 +90,7 @@
       </dependency>
       <!-- modules -->
       <dependency>
-        <groupId>org.cibseven.bpm.extension</groupId>
+        <groupId>org.cibseven.community.keycloak</groupId>
         <artifactId>cibseven-keycloak</artifactId>
         <version>${project.version}</version>
         <scope>provided</scope>

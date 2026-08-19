@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.cibseven.bpm.extension.examples</groupId>
+		<groupId>org.cibseven.community.keycloak.examples</groupId>
 		<artifactId>cibseven-keycloak-examples</artifactId>
 		<version>2.2.0-SNAPSHOT</version>
 	</parent>
@@ -21,13 +21,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.cibseven.bpm.springboot</groupId>
-			<artifactId>cibseven-bpm-spring-boot-starter-webapp</artifactId>
+			<artifactId>cibseven-bpm-spring-boot-starter-webapp-4</artifactId>
 			<!-- <artifactId>cibseven-bpm-spring-boot-starter-webapp-ee</artifactId> -->
 		</dependency>
 
 		<dependency>
 			<groupId>org.cibseven.bpm.springboot</groupId>
-			<artifactId>cibseven-bpm-spring-boot-starter-rest</artifactId>
+			<artifactId>cibseven-bpm-spring-boot-starter-rest-4</artifactId>
 		</dependency>
 
 		<!-- Spring Security -->
@@ -46,7 +46,7 @@
 
 		<!-- Keycloak Identity Prover Plugin  -->
 		<dependency>
-			<groupId>org.cibseven.bpm.extension</groupId>
+			<groupId>org.cibseven.community.keycloak</groupId>
 			<artifactId>cibseven-keycloak</artifactId>
 		</dependency>
 
@@ -117,7 +117,7 @@
 			to the jar -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
+			<artifactId>testcontainers-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
