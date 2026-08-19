@@ -21,12 +21,6 @@ Current version: `2.2.0`<br >
 Latest tests with: Keycloak `26.1.2`, `19.0.3-legacy`, CIB seven `2.2.0`
 
 #### Features
-Changes in version `2.2.0`
-
-* Support for CIB seven `2.2.0` (Spring Boot 4 / Spring Framework 7)
-* **Breaking:** the Maven `groupId` changed from `org.cibseven.bpm.extension` to `org.cibseven.community.keycloak` (Java package names are unchanged)
-* **Breaking:** the `cibseven-keycloak-jwt` module has been removed
-
 Changes in version `2.0.0`
 
 * Initial Version
