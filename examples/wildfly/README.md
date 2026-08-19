@@ -7,7 +7,7 @@ For information on how to install CIB seven on JBoss/Wildfly carefully read and 
 
 ## Install the Keycloak Identity Provider Plugin
 
-In order to install the Keycloak Identity Provider Plugin you have to download the library ``cibseven-keycloak-all-x.y.z.jar`` (can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.bpm.extension%20AND%20a:cibseven-keycloak-all)) and create a module containing it.
+In order to install the Keycloak Identity Provider Plugin you have to download the library ``cibseven-keycloak-all-x.y.z.jar`` (can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.community.keycloak%20AND%20a:cibseven-keycloak-all)) and create a module containing it.
 To do so, create a directory ``modules/org/cibseven/bpm/identity/cibseven-identity-keycloak/main`` in your JBoss/Wildfly installation and put the library inside. In the same directory, create a descriptor file named ``module.xml`` with the following content:
 
 ```xml

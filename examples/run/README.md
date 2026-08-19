@@ -5,7 +5,7 @@ This document describes the installation of the **Keycloak CIB seven Identity Pr
 
 In order to install the Keycloak Identity Provider Plugin you have to download the library ``cibseven-keycloak-run-x.y.z.jar`` and copy it to ``$CIBSEVEN_BPM_RUN_ROOT/configuration/userlib``.
 
-Please be aware that you must use the provided ``*-run-x.y.z.jar`` (fat jar, packaged with the "**-run**" extension) including transitive dependencies. The additional library is available since version ``2.0.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.bpm.extension%20AND%20a:cibseven-keycloak-run).
+Please be aware that you must use the provided ``*-run-x.y.z.jar`` (fat jar, packaged with the "**-run**" extension) including transitive dependencies. The additional library is available since version ``2.0.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.community.keycloak%20AND%20a:cibseven-keycloak-run).
 
 For the records - included dependencies are:
 
