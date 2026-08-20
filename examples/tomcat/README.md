@@ -9,7 +9,7 @@ For information on how to install CIB seven on Apache Tomcat carefully read and 
 
 In order to install the Keycloak Identity Provider Plugin you have to download the library ``cibseven-keycloak-all-x.y.z.jar`` and copy it to ``$TOMCAT_HOME/lib``.
 
-Please be aware that you must use the provided ``*-all-x.y.z.jar`` (fat jar, packaged with the "**-all**" extension) including transitive dependencies. The additional library is available since version ``1.3.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.bpm.extension%20AND%20a:cibseven-keycloak-all).
+Please be aware that you must use the provided ``*-all-x.y.z.jar`` (fat jar, packaged with the "**-all**" extension) including transitive dependencies. The additional library is available since version ``1.3.0`` and can be found e.g. on [Maven Central](https://search.maven.org/search?q=g:org.cibseven.community.keycloak%20AND%20a:cibseven-keycloak-all).
 
 For the records - included dependencies are:
 
