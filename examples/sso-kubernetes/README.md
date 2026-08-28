@@ -172,10 +172,10 @@ cibseven:
     bpm:
       provider: org.cibseven.webapp.providers.SevenProvider
     user:
-      provider: org.cibseven.webapp.auth.KeycloakUserProvider # 1
+      provider: org.cibseven.webapp.auth.OAuth2UserProvider # 1
 ```
 
-1. Using KeycloakUserProvider.
+1. Using OAuth2UserProvider.
 2. SSO login enabled for CIB seven webclient.
 3. Defines the openid, profile and email scopes.
 4. Only to be enabled when using SSO and securing engine REST with OAuth2

@@ -58,7 +58,7 @@ cibseven:
     bpm:
       provider: org.cibseven.webapp.providers.SevenProvider
     user:
-      provider: org.cibseven.webapp.auth.KeycloakUserProvider
+      provider: org.cibseven.webapp.auth.OAuth2UserProvider
 
 server:
   port: 8080
