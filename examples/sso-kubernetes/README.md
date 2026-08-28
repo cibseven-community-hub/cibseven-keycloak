@@ -150,7 +150,7 @@ keycloak:
 cibseven:
   webclient:
     services:
-      basePath: webapp/services/v1
+      basePath: /services/v1
     engineRest:
       url: http://localhost:8080
     authentication:
