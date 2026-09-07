@@ -20,6 +20,13 @@ Password grant exchanges are only supported for Keycloak's internally managed us
 Current version: `2.2.0`<br >
 Latest tests with: Keycloak `26.1.2`, `19.0.3-legacy`, CIB seven `2.2.0`
 
+> [!IMPORTANT]
+> Starting with version **2.2.0**, the `cibseven-keycloak` community plugin uses the new Maven namespace `org.cibseven.community.keycloak`.
+>
+> The Java package names have also been migrated. However, to preserve backward compatibility and avoid breaking existing integrations, a compatibility wrapper class remains available for the previous fully qualified Java name of the plugin entry point.
+
+
+
 #### Features
 Changes in version `2.0.0`
 
