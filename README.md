@@ -171,7 +171,7 @@ The CIB seven webclient manages SSO by its own, so we only need to configure the
 ```yml
   cibseven.webclient:
     user:
-      provider: org.cibseven.webapp.auth.KeycloakUserProvider # 1
+      provider: org.cibseven.webapp.auth.OAuth2UserProvider # 1
     sso: # 2
       active: true
       endpoints:
@@ -185,7 +185,7 @@ The CIB seven webclient manages SSO by its own, so we only need to configure the
       userIdProperty: preferred_username
       userNameProperty: name
 ```
-1. Using KeycloakUserProvider.
+1. Using OAuth2UserProvider.
 2. SSO login enabled for CIB seven webclient.
 3. Defines the openid, profile and email scopes.
 
