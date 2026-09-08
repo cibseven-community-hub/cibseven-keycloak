@@ -1,201 +1,44 @@
+/*
+ * Copyright CIB software GmbH and/or licensed to CIB software GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. CIB software licenses this file to you under the Apache License,
+ * Version 2.0; you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.cibseven.bpm.extension.keycloak.plugin;
 
-import static org.cibseven.bpm.engine.authorization.Authorization.ANY;
-import static org.cibseven.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT;
-import static org.cibseven.bpm.engine.authorization.Permissions.ALL;
-
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.cibseven.bpm.engine.AuthorizationService;
-import org.cibseven.bpm.engine.ProcessEngine;
-import org.cibseven.bpm.engine.authorization.Resource;
-import org.cibseven.bpm.engine.authorization.Resources;
-import org.cibseven.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.cibseven.bpm.engine.impl.cfg.ProcessEnginePlugin;
-import org.cibseven.bpm.engine.impl.persistence.entity.AuthorizationEntity;
-import org.cibseven.bpm.extension.keycloak.KeycloakConfiguration;
-import org.cibseven.bpm.extension.keycloak.KeycloakIdentityProviderFactory;
-import org.cibseven.bpm.extension.keycloak.KeycloakIdentityProviderSession;
-import org.cibseven.bpm.extension.keycloak.util.KeycloakPluginLogger;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>{@link ProcessEnginePlugin} providing Keycloak Identity Provider support</p>
+ * <p>Backward compatible alias for
+ * {@link org.cibseven.community.keycloak.plugin.KeycloakIdentityProviderPlugin}.</p>
  *
- * <p>This class extends {@link KeycloakConfiguration} such that the configuration properties
- * can be set directly on this class via the <code>&lt;properties .../&gt;</code> element
- * in bpm-platform.xml / processes.xml</p>
+ * <p>Kept only so that existing configurations referencing the old class name
+ * (bpm-platform.xml, processes.xml, Spring Boot configuration) keep working after
+ * the namespace change to <code>org.cibseven.community.keycloak</code>.</p>
+ *
+ * @deprecated as of 2.2.0, use
+ *             {@link org.cibseven.community.keycloak.plugin.KeycloakIdentityProviderPlugin} instead.
  */
-public class KeycloakIdentityProviderPlugin extends KeycloakConfiguration implements ProcessEnginePlugin {
+@Deprecated(since = "2.2.0", forRemoval = true)
+public class KeycloakIdentityProviderPlugin extends org.cibseven.community.keycloak.plugin.KeycloakIdentityProviderPlugin {
 
-	private final static KeycloakPluginLogger LOG = KeycloakPluginLogger.INSTANCE;
-	
-	private boolean authorizationEnabled;
-	
-	private KeycloakIdentityProviderFactory keycloakIdentityProviderFactory = null;
+	private static final Logger log = LoggerFactory.getLogger(KeycloakIdentityProviderPlugin.class);
 
-	/** custom interceptors to modify behaviour of default KeycloakRestTemplate */
-	private List<ClientHttpRequestInterceptor> customHttpRequestInterceptors = Collections.emptyList();
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void preInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		checkMandatoryConfigurationParameters(processEngineConfiguration);
-		
-		authorizationEnabled = processEngineConfiguration.isAuthorizationEnabled();
-
-		if (!StringUtils.isEmpty(administratorGroupName)) {
-			if (processEngineConfiguration.getAdminGroups() == null) {
-				processEngineConfiguration.setAdminGroups(new ArrayList<String>());
-			}
-			// add the configured administrator group to the engine configuration later: needs translation to group ID
-		}
-		if (!StringUtils.isEmpty(administratorUserId)) {
-			if (processEngineConfiguration.getAdminUsers() == null) {
-				processEngineConfiguration.setAdminUsers(new ArrayList<String>());
-			}
-			// add the configured administrator to the engine configuration later: potentially needs translation to user ID
-		}
-
-		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors);
-		processEngineConfiguration.setIdentityProviderSessionFactory(keycloakIdentityProviderFactory);
-
-		LOG.pluginActivated(getClass().getSimpleName(), processEngineConfiguration.getProcessEngineName());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void postInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		// nothing to do
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void postProcessEngineBuild(ProcessEngine processEngine) {
-		// always add the configured administrator group to the engine configuration
-		String administratorGroupId = null;
-		if (!StringUtils.isEmpty(administratorGroupName)) {
-			// query the real group ID
-			administratorGroupId = ((KeycloakIdentityProviderSession) keycloakIdentityProviderFactory.openSession()).
-					getKeycloakAdminGroupId(administratorGroupName);
-			((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getAdminGroups().add(administratorGroupId);
-		}
-		
-		// always add the configured administrator user to the engine configuration
-		if (!StringUtils.isEmpty(administratorUserId)) {
-			// query the real user ID
-			administratorUserId = ((KeycloakIdentityProviderSession) keycloakIdentityProviderFactory.openSession()).
-					getKeycloakAdminUserId(administratorUserId);
-			((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getAdminUsers().add(administratorUserId);
-		}
-		
-		// need to prepare administrator authorizations only in case authorization has been enabled in the configuration 
-		if(!authorizationEnabled) {
-			return;
-		}
-
-		final AuthorizationService authorizationService = processEngine.getAuthorizationService();
-
-		if (!StringUtils.isEmpty(administratorGroupName)) {
-			// create ADMIN authorizations on all built-in resources for configured admin group
-			for (Resource resource : Resources.values()) {
-				if(authorizationService.createAuthorizationQuery().groupIdIn(administratorGroupId).resourceType(resource).resourceId(ANY).count() == 0) {
-					AuthorizationEntity adminGroupAuth = new AuthorizationEntity(AUTH_TYPE_GRANT);
-					adminGroupAuth.setGroupId(administratorGroupId);
-					adminGroupAuth.setResource(resource);
-					adminGroupAuth.setResourceId(ANY);
-					adminGroupAuth.addPermission(ALL);
-					authorizationService.saveAuthorization(adminGroupAuth);
-					LOG.grantGroupPermissions(administratorGroupName, administratorGroupId, resource.resourceName());
-				}
-			}
-		}
-
-		if (!StringUtils.isEmpty(administratorUserId)) {
-			// create ADMIN authorizations on all built-in resources for configured admin user
-			for (Resource resource : Resources.values()) {
-				if(authorizationService.createAuthorizationQuery().userIdIn(administratorUserId).resourceType(resource).resourceId(ANY).count() == 0) {
-					AuthorizationEntity adminUserAuth = new AuthorizationEntity(AUTH_TYPE_GRANT);
-					adminUserAuth.setUserId(administratorUserId);
-					adminUserAuth.setResource(resource);
-					adminUserAuth.setResourceId(ANY);
-					adminUserAuth.addPermission(ALL);
-					authorizationService.saveAuthorization(adminUserAuth);
-					LOG.grantUserPermissions(administratorUserId, resource.resourceName());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Checks mandatory configuration parameters.
-	 * @param processEngineConfiguration the process engine configuration
-	 */
-	private void checkMandatoryConfigurationParameters(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		List<String> missing = new ArrayList<>();
-		if (StringUtils.isEmpty(keycloakIssuerUrl)) {
-			LOG.missingConfigurationParameter("keycloakIssuerUrl");
-			missing.add("keycloakIssuerUrl");
-		}
-		if (StringUtils.isEmpty(keycloakAdminUrl)) {
-			LOG.missingConfigurationParameter("keycloakAdminUrl");
-			missing.add("keycloakAdminUrl");
-		}
-		if (StringUtils.isEmpty(clientId)) {
-			LOG.missingConfigurationParameter("clientId");
-			missing.add("clientId");
-		}
-		if (StringUtils.isEmpty(clientSecret)) {
-			LOG.missingConfigurationParameter("clientSecret");
-			missing.add("clientSecret");
-		}
-		if (StringUtils.isEmpty(charset)) {
-			LOG.missingConfigurationParameter("charset");
-			missing.add("charset");
-		}
-		if (missing.size() > 0) {
-			LOG.activationError(getClass().getSimpleName(), processEngineConfiguration.getProcessEngineName(),
-					"missing mandatory configuration parameters " + missing.toString());
-			throw new IllegalStateException("Unable to initialize plugin "
-											+ getClass().getSimpleName() 
-											+ ": - missing mandatory configuration parameters: " 
-											+ missing.toString());
-		}
-		if (isUseEmailAsCamundaUserId() && isUseUsernameAsCamundaUserId()) {
-			LOG.activationError(getClass().getSimpleName(), processEngineConfiguration.getProcessEngineName(),
-					"cannot use configuration parameters 'useUsernameAsCamundaUserId' AND 'useEmailAsCamundaUserId' at the same time");
-			throw new IllegalStateException("Unable to initialize plugin "
-											+ getClass().getSimpleName()
-											+ ": - cannot use configuration parameters 'useUsernameAsCamundaUserId' AND 'useEmailAsCamundaUserId' at the same time");
-		}
-		if (!Charset.isSupported(charset)) {
-			throw new IllegalStateException("Unable to initialize plugin "
-											+ getClass().getSimpleName()
-											+ ": charset '" + charset + "' not supported in your JVM");
-		}
-	}
-
-	/**
-	 * immediately clear entries from cache
-	 */
-	public void clearCache() {
-		this.keycloakIdentityProviderFactory.clearCache();
-	}
-
-	/**
-	 * @param customHttpRequestInterceptors the custom http request interceptors 
-	 */
-	public void setCustomHttpRequestInterceptors(List<ClientHttpRequestInterceptor> customHttpRequestInterceptors) {
-		this.customHttpRequestInterceptors = customHttpRequestInterceptors;
+	public KeycloakIdentityProviderPlugin() {
+		log.warn("The class path org.cibseven.bpm.extension.keycloak.plugin.KeycloakIdentityProviderPlugin is deprecated "
+				+ "as of version 2.2.0 and will be removed in a future release. Please migrate to the new class path "
+				+ "org.cibseven.community.keycloak.plugin.KeycloakIdentityProviderPlugin instead. The old class path is "
+				+ "maintained only for backward compatibility with existing configurations using it directly.");
 	}
 }

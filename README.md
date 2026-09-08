@@ -20,6 +20,13 @@ Password grant exchanges are only supported for Keycloak's internally managed us
 Current version: `2.2.0`<br >
 Latest tests with: Keycloak `26.1.2`, `19.0.3-legacy`, CIB seven `2.2.0`
 
+> [!IMPORTANT]
+> Starting with version **2.2.0**, the `cibseven-keycloak` community plugin uses the new Maven namespace `org.cibseven.community.keycloak`.
+>
+> The Java package names have also been migrated. However, to preserve backward compatibility and avoid breaking existing integrations, a compatibility wrapper class remains available for the previous fully qualified Java name of the plugin entry point.
+
+
+
 #### Features
 Changes in version `2.0.0`
 
@@ -69,7 +76,7 @@ package <your-package>;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.cibseven.bpm.extension.keycloak.plugin.KeycloakIdentityProviderPlugin;
+import org.cibseven.community.keycloak.plugin.KeycloakIdentityProviderPlugin;
 
 @Component
 @ConfigurationProperties(prefix="plugin.identity.keycloak")
@@ -298,7 +305,7 @@ public class WebAppSecurityConfig {
 
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new ContainerBasedAuthenticationFilter());
-        filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "org.cibseven.bpm.extension.keycloak.showcase.sso.KeycloakAuthenticationProvider"));
+        filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "org.cibseven.community.keycloak.showcase.sso.KeycloakAuthenticationProvider"));
         filterRegistration.setOrder(201); // make sure the filter is registered after the Spring Security Filter Chain
         filterRegistration.addUrlPatterns(legacyWebappPath + "/app/*");
         return filterRegistration;
