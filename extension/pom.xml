@@ -98,6 +98,12 @@
 					<failIfNoTests>false</failIfNoTests>
 					<trimStackTrace>false</trimStackTrace>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<!-- All test classes of this module are named Keycloak*. Surefire's default
+					     includes (Test*, *Test, *Tests, *TestCase) silently skipped the caching
+					     and admin-config variants, e.g. KeycloakUserQueryTestWithCaching. -->
+					<includes>
+						<include>**/Keycloak*.java</include>
+					</includes>
 				</configuration>
 			</plugin>
 		</plugins>

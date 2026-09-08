@@ -129,8 +129,7 @@ pipeline {
                         withMaven(options: [junitPublisher(disabled: false), jacocoPublisher(disabled: false)]) {
                             sh """
                                 mvn -Dbuild.number=${BUILD_NUMBER} \
-                                    test \
-                                    -Dmaven.test.failure.ignore=true
+                                    test
                                """
                         }
                     }
