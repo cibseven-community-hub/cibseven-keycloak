@@ -149,8 +149,14 @@ public class KeycloakIdentityProviderSession implements ReadOnlyIdentityProvider
 			resultLogger.append("Keycloak group query results: [");
 		}
 
-		List<User> allMatchingUsers = userQueryCache
-						.getOrCompute(CacheableKeycloakUserQuery.of(userQuery), this::doFindUserByQueryCriteria);
+		List<User> allMatchingUsers;
+		try {
+			allMatchingUsers = userQueryCache
+							.getOrCompute(CacheableKeycloakUserQuery.of(userQuery), this::doFindUserByQueryCriteria);
+		} catch (KeycloakOrganizationAccessDeniedException koade) {
+			KeycloakPluginLogger.INSTANCE.organizationAccessDenied(koade);
+			allMatchingUsers = Collections.emptyList();
+		}
 
 		List<User> processedUsers = userService.postProcessResults(userQuery, allMatchingUsers, resultLogger);
 
@@ -424,8 +430,14 @@ public class KeycloakIdentityProviderSession implements ReadOnlyIdentityProvider
 	 * @return list of matching tenants
 	 */
 	protected List<Tenant> findTenants(KeycloakTenantQuery tenantQuery) {
-		List<Tenant> allMatchingTenants = tenantQueryCache
-				.getOrCompute(CacheableKeycloakTenantQuery.of(tenantQuery), this::doFindTenants);
+		List<Tenant> allMatchingTenants;
+		try {
+			allMatchingTenants = tenantQueryCache
+					.getOrCompute(CacheableKeycloakTenantQuery.of(tenantQuery), this::doFindTenants);
+		} catch (KeycloakOrganizationAccessDeniedException koade) {
+			KeycloakPluginLogger.INSTANCE.organizationAccessDenied(koade);
+			allMatchingTenants = Collections.emptyList();
+		}
 		return tenantService.postProcessResults(tenantQuery, allMatchingTenants);
 	}
 

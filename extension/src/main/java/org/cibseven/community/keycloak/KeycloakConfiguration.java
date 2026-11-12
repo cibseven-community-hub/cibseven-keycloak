@@ -103,7 +103,7 @@ public class KeycloakConfiguration {
 	private int maxCacheSize = 500;
 
 	/** Time after which a cached entry is evicted. default: 15 minutes */
-	private int cacheExpirationTimeoutMin = 15;
+	private int cacheExpirationTimeoutMin = 2;
 	
 	/** 
 	 * Determines if login password checks to Keycloak are cached. default: false.
@@ -123,17 +123,18 @@ public class KeycloakConfiguration {
 
 	/**
 	 * Determines if Keycloak Organizations used as CIB seven Tenants can be seen for individual users,
-	 * i.e. tenant queries filtered by user ID and user queries filtered by tenant ID.
-	 * Needs at least Keycloak 26 and the view-realm right in Keycloak.
-	 * Note: lookups of a single tenant by ID ({@code findTenantById}) are not covered by this flag,
-	 * see {@link #organizationsExtendedQueriesEnabled}.
+	 * i.e. tenant queries filtered by user ID.
+	 * Needs at least Keycloak 26.
+	 * Note: user queries filtered by tenant ID and lookups of a single tenant by ID ({@code findTenantById})
+	 * are not covered by this flag, see {@link #organizationsExtendedQueriesEnabled}.
 	 * Default: false
 	 */
 	private boolean organizationsEnabled = false;
 
 	/**
 	 * Determines if all Keycloak Organizations used as CIB seven Tenants can be listed,
-	 * i.e. unfiltered tenant queries and lookups of a single tenant by ID ({@code findTenantById}).
+	 * i.e. unfiltered tenant queries, lookups of a single tenant by ID ({@code findTenantById})
+	 * and user queries filtered by tenant ID ({@code memberOfTenant}).
 	 * Complements {@link #organizationsEnabled}; both flags work independently of each other.
 	 * Needs at least Keycloak 26 and the manage-realm right in Keycloak.
 	 * If disabled, {@code findTenantById} always returns {@code null}.

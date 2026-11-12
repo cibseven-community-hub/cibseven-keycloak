@@ -162,11 +162,12 @@ public class KeycloakUserService extends KeycloakServiceBase {
 
 	/**
 	 * Requests users of a specific tenant (Keycloak organization).
+	 * Requires {@link KeycloakConfiguration#isOrganizationsExtendedQueriesEnabled()}.
 	 * @param query the user query - including a tenantId criteria
-	 * @return list of matching users
+	 * @return list of matching users, empty if extended organization queries are not enabled
 	 */
 	public List<User> requestUsersByTenantId(CacheableKeycloakUserQuery query) {
-		if (!keycloakConfiguration.isOrganizationsEnabled()) {
+		if (!keycloakConfiguration.isOrganizationsExtendedQueriesEnabled()) {
 			return Collections.emptyList();
 		}
 		String tenantId = query.getTenantId();
@@ -196,6 +197,9 @@ public class KeycloakUserService extends KeycloakServiceBase {
 		} catch (HttpClientErrorException hcee) {
 			if (hcee.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
 				return Collections.emptyList();
+			}
+			if (hcee.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
+				throw new KeycloakOrganizationAccessDeniedException("Access denied to query members of organization " + tenantId, hcee);
 			}
 			throw new IdentityProviderException("Unable to query members of organization " + tenantId, hcee);
 		} catch (RestClientException | JsonException rce) {

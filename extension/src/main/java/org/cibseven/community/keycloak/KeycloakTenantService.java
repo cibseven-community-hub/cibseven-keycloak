@@ -67,6 +67,9 @@ public class KeycloakTenantService extends KeycloakServiceBase {
 			if (hcee.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
 				return Collections.emptyList();
 			}
+			if (hcee.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
+				throw new KeycloakOrganizationAccessDeniedException("Access denied to query organizations", hcee);
+			}
 			throw new IdentityProviderException("Unable to query organizations", hcee);
 		} catch (RestClientException | JsonException ex) {
 			throw new IdentityProviderException("Unable to query organizations", ex);
@@ -104,6 +107,9 @@ public class KeycloakTenantService extends KeycloakServiceBase {
 			if (hcee.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
 				return Collections.emptyList();
 			}
+			if (hcee.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
+				throw new KeycloakOrganizationAccessDeniedException("Access denied to query organizations of user " + userId, hcee);
+			}
 			throw new IdentityProviderException("Unable to query organizations of user " + userId, hcee);
 		} catch (RestClientException | JsonException ex) {
 			throw new IdentityProviderException("Unable to query organizations of user " + userId, ex);
@@ -132,6 +138,9 @@ public class KeycloakTenantService extends KeycloakServiceBase {
 		} catch (HttpClientErrorException hcee) {
         	if (hcee.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
             	return null;
+        	}
+        	if (hcee.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
+        		throw new KeycloakOrganizationAccessDeniedException("Access denied to query organization " + tenantId, hcee);
         	}
 			throw new IdentityProviderException("Unable to query organization " + tenantId, hcee);
 		} catch (RestClientException | JsonException ex) {

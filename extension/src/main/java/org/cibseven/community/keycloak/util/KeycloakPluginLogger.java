@@ -60,6 +60,10 @@ public class KeycloakPluginLogger extends BaseLogger {
 		logDebug("022", "FIND group with query {}", filter);
 	}
 
+	public void organizationAccessDenied(Exception exception) {
+		logWarn("023", "ORGANIZATION request forbidden - returning no tenants: {}", exception.getMessage());
+	}
+
 	public void groupQueryResult(String summary) {
 		// log sensitive data only on FINE
 		logDebug("050", summary);

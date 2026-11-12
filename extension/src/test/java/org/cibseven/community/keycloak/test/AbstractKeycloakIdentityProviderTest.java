@@ -6,6 +6,8 @@ import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.net.ssl.SSLContext;
@@ -84,6 +86,12 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 	
 	protected static String GROUP_ID_SIMILAR_CLIENT_NAME;
 	protected static String USER_ID_SIMILAR_CLIENT_NAME;
+
+	protected static String TENANT_ID_ONE;
+	protected static String TENANT_ID_TWO;
+
+	/** name of the test realm */
+	private static final String TEST_REALM = "test";
 	
 	private static final RestTemplate restTemplate = new RestTemplate();
 	
@@ -120,7 +128,7 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 				KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
 						Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
 				
-				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.5.6")
+				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.5.5")
 					.withAdminUsername(KEYCLOAK_ADMIN_USER)
 					.withAdminPassword(KEYCLOAK_ADMIN_PASSWORD)
 					.withExposedPorts(containerPort,containerAdminPort) // Keycloak’s container ports
@@ -281,7 +289,7 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 		// Create Users
 		USER_ID_CAMUNDA_ADMIN = createUser(headers, realm, "camunda", "Admin", "Camunda", "camunda@accso.de", "camunda1!");
 		assignUserGroup(headers, realm, USER_ID_CAMUNDA_ADMIN, GROUP_ID_ADMIN);
-		
+
 		USER_ID_TEAMLEAD = createUser(headers, realm, "hans.mustermann","Hans", "Mustermann", "hans.mustermann@tradermail.info", "äöüÄÖÜ");
 		assignUserGroup(headers, realm, USER_ID_TEAMLEAD, GROUP_ID_TEAMLEAD);
 		
@@ -304,7 +312,18 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 		GROUP_ID_SIMILAR_CLIENT_NAME = createGroup(headers, realm, "camunda-identity-service", false);
 		USER_ID_SIMILAR_CLIENT_NAME = createUser(headers, realm, "camunda-identity-service", "Identity", "Service", "identity.service@test.de", null);
 		assignUserGroup(headers, realm, USER_ID_SIMILAR_CLIENT_NAME, GROUP_ID_SIMILAR_CLIENT_NAME);
-		
+
+		// Create organizations (= CIB seven tenants) and their members
+		// - Tenant One: camunda@accso.de, gunnar.von-der-beck@accso.de
+		// - Tenant Two: gunnar.von-der-beck@accso.de, johnfoo@gmail.com
+		// - hans.mustermann@tradermail.info is member of no tenant
+		TENANT_ID_ONE = createOrganization(headers, realm, "Tenant One", "tenant-one");
+		TENANT_ID_TWO = createOrganization(headers, realm, "Tenant Two", "tenant-two");
+		assignUserOrganization(headers, realm, USER_ID_CAMUNDA_ADMIN, TENANT_ID_ONE);
+		assignUserOrganization(headers, realm, USER_ID_MANAGER, TENANT_ID_ONE);
+		assignUserOrganization(headers, realm, USER_ID_MANAGER, TENANT_ID_TWO);
+		assignUserOrganization(headers, realm, USER_ID_HIERARCHY, TENANT_ID_TWO);
+
 		// --------------------------------------------------------------------
 		
 		// Create Client roles
@@ -397,7 +416,7 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 	 * @param realm the realm name
 	 */
 	private static void createRealm(HttpHeaders headers, String realm) {
-	    String realmData = "{\"id\":null,\"realm\":\"" + realm + "\",\"notBefore\":0,\"revokeRefreshToken\":false,\"refreshTokenMaxReuse\":0,\"accessTokenLifespan\":300,\"accessTokenLifespanForImplicitFlow\":900,\"ssoSessionIdleTimeout\":1800,\"ssoSessionMaxLifespan\":36000,\"ssoSessionIdleTimeoutRememberMe\":0,\"ssoSessionMaxLifespanRememberMe\":0,\"offlineSessionIdleTimeout\":2592000,\"offlineSessionMaxLifespanEnabled\":false,\"offlineSessionMaxLifespan\":5184000,\"accessCodeLifespan\":60,\"accessCodeLifespanUserAction\":300,\"accessCodeLifespanLogin\":1800,\"actionTokenGeneratedByAdminLifespan\":43200,\"actionTokenGeneratedByUserLifespan\":300,\"enabled\":true,\"sslRequired\":\"external\",\"registrationAllowed\":false,\"registrationEmailAsUsername\":false,\"rememberMe\":false,\"verifyEmail\":false,\"loginWithEmailAllowed\":true,\"duplicateEmailsAllowed\":false,\"resetPasswordAllowed\":false,\"editUsernameAllowed\":false,\"bruteForceProtected\":false,\"permanentLockout\":false,\"maxFailureWaitSeconds\":900,\"minimumQuickLoginWaitSeconds\":60,\"waitIncrementSeconds\":60,\"quickLoginCheckMilliSeconds\":1000,\"maxDeltaTimeSeconds\":43200,\"failureFactor\":30,\"defaultRoles\":[\"uma_authorization\",\"offline_access\"],\"requiredCredentials\":[\"password\"],\"otpPolicyType\":\"totp\",\"otpPolicyAlgorithm\":\"HmacSHA1\",\"otpPolicyInitialCounter\":0,\"otpPolicyDigits\":6,\"otpPolicyLookAheadWindow\":1,\"otpPolicyPeriod\":30,\"otpSupportedApplications\":[\"FreeOTP\",\"Google Authenticator\"],\"browserSecurityHeaders\":{\"contentSecurityPolicyReportOnly\":\"\",\"xContentTypeOptions\":\"nosniff\",\"xRobotsTag\":\"none\",\"xFrameOptions\":\"SAMEORIGIN\",\"xXSSProtection\":\"1; mode=block\",\"contentSecurityPolicy\":\"frame-src 'self'; frame-ancestors 'self'; object-src 'none';\",\"strictTransportSecurity\":\"max-age=31536000; includeSubDomains\"},\"smtpServer\":{},\"eventsEnabled\":false,\"eventsListeners\":[\"jboss-logging\"],\"enabledEventTypes\":[],\"adminEventsEnabled\":false,\"adminEventsDetailsEnabled\":false,\"internationalizationEnabled\":false,\"supportedLocales\":[],\"browserFlow\":\"browser\",\"registrationFlow\":\"registration\",\"directGrantFlow\":\"direct grant\",\"resetCredentialsFlow\":\"reset credentials\",\"clientAuthenticationFlow\":\"clients\",\"dockerAuthenticationFlow\":\"docker auth\",\"attributes\":{\"_browser_header.xXSSProtection\":\"1; mode=block\",\"_browser_header.xFrameOptions\":\"SAMEORIGIN\",\"_browser_header.strictTransportSecurity\":\"max-age=31536000; includeSubDomains\",\"permanentLockout\":\"false\",\"quickLoginCheckMilliSeconds\":\"1000\",\"_browser_header.xRobotsTag\":\"none\",\"maxFailureWaitSeconds\":\"900\",\"minimumQuickLoginWaitSeconds\":\"60\",\"failureFactor\":\"30\",\"actionTokenGeneratedByUserLifespan\":\"300\",\"maxDeltaTimeSeconds\":\"43200\",\"_browser_header.xContentTypeOptions\":\"nosniff\",\"offlineSessionMaxLifespan\":\"5184000\",\"actionTokenGeneratedByAdminLifespan\":\"43200\",\"_browser_header.contentSecurityPolicyReportOnly\":\"\",\"bruteForceProtected\":\"false\",\"_browser_header.contentSecurityPolicy\":\"frame-src 'self'; frame-ancestors 'self'; object-src 'none';\",\"waitIncrementSeconds\":\"60\",\"offlineSessionMaxLifespanEnabled\":\"false\"},\"userManagedAccessAllowed\":false}";
+	    String realmData = "{\"id\":null,\"realm\":\"" + realm + "\",\"notBefore\":0, \"organizationsEnabled\":true,\"revokeRefreshToken\":false,\"refreshTokenMaxReuse\":0,\"accessTokenLifespan\":300,\"accessTokenLifespanForImplicitFlow\":900,\"ssoSessionIdleTimeout\":1800,\"ssoSessionMaxLifespan\":36000,\"ssoSessionIdleTimeoutRememberMe\":0,\"ssoSessionMaxLifespanRememberMe\":0,\"offlineSessionIdleTimeout\":2592000,\"offlineSessionMaxLifespanEnabled\":false,\"offlineSessionMaxLifespan\":5184000,\"accessCodeLifespan\":60,\"accessCodeLifespanUserAction\":300,\"accessCodeLifespanLogin\":1800,\"actionTokenGeneratedByAdminLifespan\":43200,\"actionTokenGeneratedByUserLifespan\":300,\"enabled\":true,\"sslRequired\":\"external\",\"registrationAllowed\":false,\"registrationEmailAsUsername\":false,\"rememberMe\":false,\"verifyEmail\":false,\"loginWithEmailAllowed\":true,\"duplicateEmailsAllowed\":false,\"resetPasswordAllowed\":false,\"editUsernameAllowed\":false,\"bruteForceProtected\":false,\"permanentLockout\":false,\"maxFailureWaitSeconds\":900,\"minimumQuickLoginWaitSeconds\":60,\"waitIncrementSeconds\":60,\"quickLoginCheckMilliSeconds\":1000,\"maxDeltaTimeSeconds\":43200,\"failureFactor\":30,\"defaultRoles\":[\"uma_authorization\",\"offline_access\"],\"requiredCredentials\":[\"password\"],\"otpPolicyType\":\"totp\",\"otpPolicyAlgorithm\":\"HmacSHA1\",\"otpPolicyInitialCounter\":0,\"otpPolicyDigits\":6,\"otpPolicyLookAheadWindow\":1,\"otpPolicyPeriod\":30,\"otpSupportedApplications\":[\"FreeOTP\",\"Google Authenticator\"],\"browserSecurityHeaders\":{\"contentSecurityPolicyReportOnly\":\"\",\"xContentTypeOptions\":\"nosniff\",\"xRobotsTag\":\"none\",\"xFrameOptions\":\"SAMEORIGIN\",\"xXSSProtection\":\"1; mode=block\",\"contentSecurityPolicy\":\"frame-src 'self'; frame-ancestors 'self'; object-src 'none';\",\"strictTransportSecurity\":\"max-age=31536000; includeSubDomains\"},\"smtpServer\":{},\"eventsEnabled\":false,\"eventsListeners\":[\"jboss-logging\"],\"enabledEventTypes\":[],\"adminEventsEnabled\":false,\"adminEventsDetailsEnabled\":false,\"internationalizationEnabled\":false,\"supportedLocales\":[],\"browserFlow\":\"browser\",\"registrationFlow\":\"registration\",\"directGrantFlow\":\"direct grant\",\"resetCredentialsFlow\":\"reset credentials\",\"clientAuthenticationFlow\":\"clients\",\"dockerAuthenticationFlow\":\"docker auth\",\"attributes\":{\"_browser_header.xXSSProtection\":\"1; mode=block\",\"_browser_header.xFrameOptions\":\"SAMEORIGIN\",\"_browser_header.strictTransportSecurity\":\"max-age=31536000; includeSubDomains\",\"permanentLockout\":\"false\",\"quickLoginCheckMilliSeconds\":\"1000\",\"_browser_header.xRobotsTag\":\"none\",\"maxFailureWaitSeconds\":\"900\",\"minimumQuickLoginWaitSeconds\":\"60\",\"failureFactor\":\"30\",\"actionTokenGeneratedByUserLifespan\":\"300\",\"maxDeltaTimeSeconds\":\"43200\",\"_browser_header.xContentTypeOptions\":\"nosniff\",\"offlineSessionMaxLifespan\":\"5184000\",\"actionTokenGeneratedByAdminLifespan\":\"43200\",\"_browser_header.contentSecurityPolicyReportOnly\":\"\",\"bruteForceProtected\":\"false\",\"_browser_header.contentSecurityPolicy\":\"frame-src 'self'; frame-ancestors 'self'; object-src 'none';\",\"waitIncrementSeconds\":\"60\",\"offlineSessionMaxLifespanEnabled\":\"false\"},\"userManagedAccessAllowed\":false}";
 	    HttpEntity<String> request = new HttpEntity<>(realmData, headers);
 	    ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_URL + "/admin/realms", request, String.class);
 	    assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
@@ -597,6 +616,31 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 		LOG.info("Deleted group with ID {}", groupId);
 	}
 
+	/**
+	 * Creates an organization, which is mapped to a CIB seven tenant.
+	 * <p>
+	 * Requires organizations to be enabled on the realm.
+	 * @param headers HttpHeaders including the Authorization header / access token
+	 * @param realm the realm name
+	 * @param name the display name of the organization (also used to look up the generated ID)
+	 * @param alias the unique alias of the organization (required, since Keycloak rejects a name containing spaces as alias)
+	 * @return the organization ID, used as the tenant ID
+	 * @throws JSONException in case of errors
+	 */
+	static String createOrganization(HttpHeaders headers, String realm, String name, String alias) throws JSONException {
+		String orgData = "{\"name\":\"" + name + "\",\"alias\":\"" + alias + "\",\"enabled\":true}";
+		ResponseEntity<String> response = restTemplate.postForEntity(
+				KEYCLOAK_URL + "/admin/realms/" + realm + "/organizations", new HttpEntity<>(orgData, headers), String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
+    	// look up the generated ID, same approach as createUser/createGroup
+    	response = restTemplate.exchange(KEYCLOAK_URL + "/admin/realms/" + realm + "/organizations?search=" + name + "&exact=true",
+            HttpMethod.GET, new HttpEntity<>(headers), String.class);
+    	assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+    	String orgId = new JSONArray(response.getBody()).getJSONObject(0).getString("id");
+    	LOG.info("Created organization {}", name);
+    	return orgId;
+	}
+
 	private static JSONObject findGroupInHierarchy(JSONArray groups, String groupName) throws JSONException {
 	    for (int i = 0; i < groups.length(); i++) {
 	    	JSONObject group = groups.getJSONObject(i);
@@ -624,7 +668,99 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 				HttpMethod.PUT, new HttpEntity<>(headers), String.class);
 	    assertThat(response.getStatusCode(), equalTo(HttpStatus.NO_CONTENT));
 	}
-	
+
+	/**
+	 * Adds an existing user as member to an organization (= assigns the user to a CIB seven tenant).
+	 * @param headers HttpHeaders including the Authorization header / access token
+	 * @param realm the realm name
+	 * @param userId the Keycloak ID of the user
+	 * @param organizationId the organization ID
+	 */
+	static void assignUserOrganization(HttpHeaders headers, String realm, String userId, String organizationId) {
+		// the request body is the plain user ID as JSON string
+		ResponseEntity<String> response = restTemplate.postForEntity(
+				KEYCLOAK_URL + "/admin/realms/" + realm + "/organizations/" + organizationId + "/members",
+				new HttpEntity<>("\"" + userId + "\"", headers), String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
+	}
+
+	// ------------------------------------------------------------------------
+	// Service account permissions
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Grants additional realm-management client roles (e.g. {@code manage-realm}) to the
+	 * service account of the test client. Used by tests which need more than the default permissions, so that
+	 * all other tests keep running with the minimal set of permissions.
+	 * <p>
+	 * Must be called before the process engine is built, since the roles are part of the access token
+	 * acquired by the plugin. Roles already granted are skipped.
+	 * @param roleNames the names of the realm-management client roles
+	 * @throws JSONException in case of errors
+	 */
+	protected static void grantServiceAccountRealmManagementRoles(String... roleNames) throws JSONException {
+		if (roleNames.length == 0) return;
+		HttpHeaders headers = authenticateKeycloakAdmin();
+		String roleMappingUrl = getServiceAccountRealmManagementRoleMappingUrl(headers);
+		ResponseEntity<String> response = restTemplate.exchange(roleMappingUrl + "/available",
+				HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		JSONArray roles = filterRolesByName(new JSONArray(response.getBody()), roleNames);
+		if (roles.length() > 0) {
+			response = restTemplate.postForEntity(roleMappingUrl, new HttpEntity<>(roles.toString(), headers), String.class);
+			assertThat(response.getStatusCode(), equalTo(HttpStatus.NO_CONTENT));
+		}
+		LOG.info("Granted realm-management roles {} to service account", Arrays.toString(roleNames));
+	}
+
+	/**
+	 * Revokes realm-management client roles from the service account of the test client,
+	 * see {@link #grantServiceAccountRealmManagementRoles(String...)}. Roles not granted are skipped.
+	 * @param roleNames the names of the realm-management client roles
+	 * @throws JSONException in case of errors
+	 */
+	protected static void revokeServiceAccountRealmManagementRoles(String... roleNames) throws JSONException {
+		if (roleNames.length == 0) return;
+		HttpHeaders headers = authenticateKeycloakAdmin();
+		String roleMappingUrl = getServiceAccountRealmManagementRoleMappingUrl(headers);
+		ResponseEntity<String> response = restTemplate.exchange(roleMappingUrl,
+				HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		JSONArray roles = filterRolesByName(new JSONArray(response.getBody()), roleNames);
+		if (roles.length() > 0) {
+			response = restTemplate.exchange(roleMappingUrl, HttpMethod.DELETE,
+					new HttpEntity<>(roles.toString(), headers), String.class);
+			assertThat(response.getStatusCode(), equalTo(HttpStatus.NO_CONTENT));
+		}
+		LOG.info("Revoked realm-management roles {} from service account", Arrays.toString(roleNames));
+	}
+
+	/**
+	 * @return URL of the realm-management client role mappings of the test client's service account
+	 */
+	private static String getServiceAccountRealmManagementRoleMappingUrl(HttpHeaders headers) throws JSONException {
+		String clientInternalId = getClientInternalId(headers, TEST_REALM, "camunda-identity-service");
+		ResponseEntity<String> response = restTemplate.exchange(
+				KEYCLOAK_URL + "/admin/realms/" + TEST_REALM + "/clients/" + clientInternalId + "/service-account-user",
+				HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		String serviceAccountId = new JSONObject(response.getBody()).getString("id");
+		String realmManagementId = getClientInternalId(headers, TEST_REALM, "realm-management");
+		return KEYCLOAK_URL + "/admin/realms/" + TEST_REALM + "/users/" + serviceAccountId
+				+ "/role-mappings/clients/" + realmManagementId;
+	}
+
+	private static JSONArray filterRolesByName(JSONArray roles, String... roleNames) throws JSONException {
+		List<String> names = Arrays.asList(roleNames);
+		JSONArray result = new JSONArray();
+		for (int i = 0; i < roles.length(); i++) {
+			if (names.contains(roles.getJSONObject(i).getString("name"))) {
+				result.put(roles.getJSONObject(i));
+			}
+		}
+		return result;
+	}
+
 	// ------------------------------------------------------------------------
 	// Client role specific functions
 	// ------------------------------------------------------------------------
