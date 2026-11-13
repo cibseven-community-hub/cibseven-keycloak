@@ -103,7 +103,7 @@ public class KeycloakConfiguration {
 	private int maxCacheSize = 500;
 
 	/** Time after which a cached entry is evicted. default: 15 minutes */
-	private int cacheExpirationTimeoutMin = 15;
+	private int cacheExpirationTimeoutMin = 2;
 	
 	/** 
 	 * Determines if login password checks to Keycloak are cached. default: false.
@@ -120,6 +120,15 @@ public class KeycloakConfiguration {
 
 	/** Time after which a cached login entry is evicted. default: 15 minutes */
 	private int loginCacheExpirationTimeoutMin = 15;
+
+	/**
+	 * Determines if Keycloak Organizations are used as CIB seven Tenants,
+	 * i.e. tenant queries and user queries filtered by tenant ID.
+	 * Needs at least Keycloak 26.7 and the view-organizations role for the service account.
+	 * If disabled, tenant queries and user queries filtered by tenant ID return an empty result.
+	 * Default: false
+	 */
+	private boolean organizationsEnabled = false;
 	
 	//-------------------------------------------------------------------------
 	// Getters / Setters
@@ -469,6 +478,14 @@ public class KeycloakConfiguration {
 	 */
 	public void setLoginCacheExpirationTimeoutMin(int loginCacheExpirationTimeoutMin) {
 		this.loginCacheExpirationTimeoutMin = loginCacheExpirationTimeoutMin;
+	}
+
+	public boolean isOrganizationsEnabled() {
+		return organizationsEnabled;
+	}
+
+	public void setOrganizationsEnabled(boolean organizationsEnabled) {
+		this.organizationsEnabled = organizationsEnabled;
 	}
 
 	//-------------------------------------------------------------------------
