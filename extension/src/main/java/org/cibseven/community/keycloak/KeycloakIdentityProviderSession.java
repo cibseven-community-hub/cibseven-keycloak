@@ -264,6 +264,11 @@ public class KeycloakIdentityProviderSession implements ReadOnlyIdentityProvider
 			if (hcee.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
 				return false;
 			}
+			// Keycloak 26.7+ answers invalid credentials with 400 "invalid_grant" instead of 401
+			if (hcee.getStatusCode().equals(HttpStatus.BAD_REQUEST)
+					&& hcee.getResponseBodyAsString().contains("\"invalid_grant\"")) {
+				return false;
+			}
 			throw new IdentityProviderException("Unable to authenticate user at " + keycloakConfiguration.getKeycloakIssuerUrl(),
 					hcee);
 		} catch (RestClientException | UnsupportedEncodingException rce) {

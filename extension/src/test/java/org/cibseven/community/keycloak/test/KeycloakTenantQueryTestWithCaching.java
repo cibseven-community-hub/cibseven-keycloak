@@ -13,7 +13,7 @@ public class KeycloakTenantQueryTestWithCaching extends AbstractKeycloakTenantQu
 
 	public static Test suite() {
 		return tenantSuite(KeycloakTenantQueryTestWithCaching.class, "camunda.enableCachingAndOrganizations.cfg.xml",
-				MANAGE_REALM);
+				VIEW_ORGANIZATIONS);
 	}
 
 	@Override

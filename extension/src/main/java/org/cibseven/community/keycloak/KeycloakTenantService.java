@@ -46,11 +46,11 @@ public class KeycloakTenantService extends KeycloakServiceBase {
 
 	/**
 	 * Requests all tenants (Keycloak organizations).
-	 * Requires {@link KeycloakConfiguration#isOrganizationsExtendedQueriesEnabled()}.
+	 * Requires {@link KeycloakConfiguration#isOrganizationsEnabled()}.
 	 * @return list of all tenants, empty if organizations are not enabled
 	 */
 	public List<Tenant> getOrganizationsforTenants() {
-		if (!keycloakConfiguration.isOrganizationsExtendedQueriesEnabled()) {
+		if (!keycloakConfiguration.isOrganizationsEnabled()) {
 			return Collections.emptyList();
 		}
 		List<Tenant> tenantList = new ArrayList<>();
@@ -119,7 +119,7 @@ public class KeycloakTenantService extends KeycloakServiceBase {
 
 	/**
 	 * Requests a single tenant (Keycloak organization) by its ID.
-	 * Requires {@link KeycloakConfiguration#isOrganizationsExtendedQueriesEnabled()}.
+	 * Requires {@link KeycloakConfiguration#isOrganizationsEnabled()}.
 	 * <p>
 	 * No authorization check is done here: this method is called from the cached, user independent
 	 * query path. Authorization is applied per caller in {@link #postProcessResults(TenantQueryImpl, List)}.
@@ -127,7 +127,7 @@ public class KeycloakTenantService extends KeycloakServiceBase {
 	 * @return the tenant, or {@code null} if not found or organizations are not enabled
 	 */
 	public TenantEntity findTenant(String tenantId) {
-		if (!keycloakConfiguration.isOrganizationsExtendedQueriesEnabled()) {
+		if (!keycloakConfiguration.isOrganizationsEnabled()) {
 			return null;
 		}
 		try {

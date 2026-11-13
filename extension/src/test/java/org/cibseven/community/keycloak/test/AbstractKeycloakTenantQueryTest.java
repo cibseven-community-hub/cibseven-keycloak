@@ -26,11 +26,10 @@ import junit.framework.TestSuite;
 public abstract class AbstractKeycloakTenantQueryTest extends AbstractKeycloakIdentityProviderTest {
 
 	/**
-	 * Required for the organization endpoints used by {@code organizationsExtendedQueriesEnabled}
-	 * (list all organizations, lookup by ID, members of an organization), otherwise Keycloak answers with 403.
-	 * Not required for {@code organizationsEnabled} (organizations of a user).
+	 * Required for all organization endpoints used by the plugin (Keycloak 26.7+),
+	 * otherwise Keycloak answers with 403.
 	 */
-	protected static final String MANAGE_REALM = "manage-realm";
+	protected static final String VIEW_ORGANIZATIONS = "view-organizations";
 
 	protected static final String USER_ID_CAMUNDA = "camunda@accso.de";
 	protected static final String USER_ID_GUNNAR = "gunnar.von-der-beck@accso.de";

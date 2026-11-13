@@ -122,25 +122,13 @@ public class KeycloakConfiguration {
 	private int loginCacheExpirationTimeoutMin = 15;
 
 	/**
-	 * Determines if Keycloak Organizations used as CIB seven Tenants can be seen for individual users,
-	 * i.e. tenant queries filtered by user ID.
-	 * Needs at least Keycloak 26.
-	 * Note: user queries filtered by tenant ID and lookups of a single tenant by ID ({@code findTenantById})
-	 * are not covered by this flag, see {@link #organizationsExtendedQueriesEnabled}.
+	 * Determines if Keycloak Organizations are used as CIB seven Tenants,
+	 * i.e. tenant queries and user queries filtered by tenant ID.
+	 * Needs at least Keycloak 26.7 and the view-organizations role for the service account.
+	 * If disabled, tenant queries and user queries filtered by tenant ID return an empty result.
 	 * Default: false
 	 */
 	private boolean organizationsEnabled = false;
-
-	/**
-	 * Determines if all Keycloak Organizations used as CIB seven Tenants can be listed,
-	 * i.e. unfiltered tenant queries, lookups of a single tenant by ID ({@code findTenantById})
-	 * and user queries filtered by tenant ID ({@code memberOfTenant}).
-	 * Complements {@link #organizationsEnabled}; both flags work independently of each other.
-	 * Needs at least Keycloak 26 and the manage-realm right in Keycloak.
-	 * If disabled, {@code findTenantById} always returns {@code null}.
-	 * Default: false
-	 */
-	private boolean organizationsExtendedQueriesEnabled = false;
 	
 	//-------------------------------------------------------------------------
 	// Getters / Setters
@@ -498,14 +486,6 @@ public class KeycloakConfiguration {
 
 	public void setOrganizationsEnabled(boolean organizationsEnabled) {
 		this.organizationsEnabled = organizationsEnabled;
-	}
-
-	public boolean isOrganizationsExtendedQueriesEnabled() {
-		return organizationsExtendedQueriesEnabled;
-	}
-
-	public void setOrganizationsExtendedQueriesEnabled(boolean organizationsExtendedQueriesEnabled) {
-		this.organizationsExtendedQueriesEnabled = organizationsExtendedQueriesEnabled;
 	}
 
 	//-------------------------------------------------------------------------

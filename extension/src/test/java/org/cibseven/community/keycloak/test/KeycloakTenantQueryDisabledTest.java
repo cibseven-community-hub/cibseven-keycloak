@@ -3,8 +3,8 @@ package org.cibseven.community.keycloak.test;
 import junit.framework.Test;
 
 /**
- * Tests tenant related queries with the default configuration, i.e. {@code organizationsEnabled} and
- * {@code organizationsExtendedQueriesEnabled} switched off (backward compatibility).
+ * Tests tenant related queries with the default configuration, i.e. {@code organizationsEnabled}
+ * switched off (backward compatibility).
  * <p>
  * Runs without any additional permissions for the service account: with organizations disabled the
  * organization endpoints must not be called at all.
@@ -24,10 +24,6 @@ public class KeycloakTenantQueryDisabledTest extends AbstractKeycloakTenantQuery
 
 	public void testTenantQueryByUserMemberReturnsNothing() {
 		assertEquals(0, identityService.createTenantQuery().userMember(USER_ID_GUNNAR).count());
-	}
-
-	public void testFindTenantByIdReturnsNull() {
-		assertNull(findTenantById(TENANT_ID_ONE));
 	}
 
 	public void testUserQueryMemberOfTenantReturnsNothing() {

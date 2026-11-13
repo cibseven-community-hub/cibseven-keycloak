@@ -4,8 +4,7 @@ import org.cibseven.bpm.engine.impl.identity.IdentityProviderException;
 
 /**
  * Thrown in case Keycloak denies access (403) to an organization endpoint,
- * typically because the service account is missing the role {@code manage-realm}
- * required for the extended organization queries.
+ * typically because the service account is missing the role {@code view-organizations}.
  * <p>
  * Unchecked, so that it can pass through the query cache computation. Handled by
  * {@link KeycloakIdentityProviderSession}, which logs a warning and returns no tenants.

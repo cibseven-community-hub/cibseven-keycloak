@@ -162,12 +162,12 @@ public class KeycloakUserService extends KeycloakServiceBase {
 
 	/**
 	 * Requests users of a specific tenant (Keycloak organization).
-	 * Requires {@link KeycloakConfiguration#isOrganizationsExtendedQueriesEnabled()}.
+	 * Requires {@link KeycloakConfiguration#isOrganizationsEnabled()}.
 	 * @param query the user query - including a tenantId criteria
-	 * @return list of matching users, empty if extended organization queries are not enabled
+	 * @return list of matching users, empty if organizations are not enabled
 	 */
 	public List<User> requestUsersByTenantId(CacheableKeycloakUserQuery query) {
-		if (!keycloakConfiguration.isOrganizationsExtendedQueriesEnabled()) {
+		if (!keycloakConfiguration.isOrganizationsEnabled()) {
 			return Collections.emptyList();
 		}
 		String tenantId = query.getTenantId();

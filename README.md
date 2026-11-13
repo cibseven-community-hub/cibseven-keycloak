@@ -37,7 +37,7 @@ Known limitations:
 *   A strategy to distinguish SYSTEM and WORKFLOW groups is missing. Currently only the administrator group is mapped to type SYSTEM.
 *   Some query filters are applied on the client side - the Keycloak REST API does not allow full criteria search in all required cases.
 *   Sort criteria for queries are implemented on the client side - the Keycloak REST API does not allow result ordering.
-*   Tenants are mapped to Keycloak organizations (requires Keycloak 26 or later). Tenant queries and user queries filtered by tenant (`memberOfTenant`) are supported; group queries filtered by tenant (`GroupQuery.memberOfTenant`) are not.
+*   Tenants are mapped to Keycloak organizations (requires Keycloak 26.7 or later). Tenant queries and user queries filtered by tenant (`memberOfTenant`) are supported; group queries filtered by tenant (`GroupQuery.memberOfTenant`) are not.
 
 ## Prerequisites in your Keycloak realm
 
@@ -51,13 +51,14 @@ Known limitations:
 4. In order to use refresh tokens set the "Use Refresh Tokens For Client Credentials Grant" option within the "OpenID Connect Compatibility Modes" section (available in newer Keycloak versions):
 
     ![IdentityServiceOptions](doc/identity-service_options.png "Identity Service Options")
-5. Add the roles `query-groups, query-users, view-users` to the service account client roles of your realm (choose `realm-management` or `master-realm`, depending on whether you are using a separate realm or master):
+5. Add the roles `query-groups, query-users, view-users` to the service account client roles of your realm (choose `realm-management` or `master-realm`, depending on whether you are using a separate realm or master). For tenant support you will additionally need `view-organizations`, see step 8:
     ![IdentityServiceRoles](doc/identity-service_roles.png "Identity Service Roles")
 6. Your client credentials can be found here:
     ![IdentityServiceCredentials](doc/identity-service_credentials.png "Identity Service Credentials")
 7. Once you're done with the basic setup you're now ready to manage your users and groups with Keycloak. Please keep in mind, that in order to make the Keycloak Identity Provider work, you will need at least one dedicated CIB seven admin group or CIB seven user in your realm. Whether you create this group/user manually or import it using the LDAP user federation or any other Identity Provider is up to you.
     ![KeycloakGroups](doc/keycloak-groups.png "Keycloak Realm Groups")
 8. Optional - multi-tenancy: to use tenants, enable "Organizations" in your realm settings and create one organization per tenant. The CIB seven tenant ID is the Keycloak organization ID, the tenant name is the organization name. Users become members of a tenant by being added as members of the organization.
+   Tenant support requires Keycloak 26.7 or later. Set `organizationsEnabled: true` in the plugin configuration and add the role `view-organizations` to the service account client roles (see step 5). This lets the plugin look up the tenants of a user, list all tenants, look up a single tenant by ID and look up the users of a tenant. See the [configuration options](#usage-with-cib-seven-spring-boot) for details.
 
 ## Usage with CIB seven Spring Boot
 
@@ -138,6 +139,7 @@ A list of configuration options can be found below:
 | `proxyUri`                        | Optional URI of a proxy to use. Default: `null`, example: `http://proxy:81`.<br />*Since 2.0.0*                                                                                                                                                                                                                                                                                                                                         |
 | `proxyUser`                       | Optional username for proxy authentication. Default: `null`.<br />*Since 2.0.0*                                                                                                                                                                                                                                                                                                                                                         |
 | `proxyPassword`                   | Optional password for proxy authentication. Default: `null`.<br />*Since 2.0.0*                                                                                                                                                                                                                                                                                                                                                         |
+| `organizationsEnabled`            | Whether Keycloak organizations are mapped to CIB seven tenants, i.e. tenant queries (including looking up a single tenant by ID) and user queries filtered by tenant ID (`memberOfTenant`). Default: `false`.<br />Requires Keycloak 26.7 or later and the `view-organizations` role for the service account. If disabled, tenant queries and `memberOfTenant` user queries return an empty result.<br />*Since 2.3.0* |
 <!--
 | `charset` | Charset to use for REST communication with Keycloak Server. Default: `UTF-8`.<br />*Since 1.1.0* |
 -->
@@ -146,17 +148,17 @@ A list of configuration options can be found below:
 
 This is a ReadOnlyIdentityProvider which translates all queries against the CIB seven IdentityService in REST queries against Keycloak. Under high load it makes sense to not request the same things again and again, especially since the data of users and groups do not change every second. Therefore this plugin provides an optional cache feature.
 
-### User and group query caching
+### User, group and tenant query caching
 
-In order to activate caching of user and group queries you have the following options available:
+In order to activate caching of user, group and tenant queries you have the following options available:
 
 | *Property* | *Description* |
 | --- | --- |
-| `cacheEnabled` | Enable caching of user and group queries to Keycloak to improve performance. Default: `false`.<br />*Since 2.2.0* |
+| `cacheEnabled` | Enable caching of user, group and tenant queries to Keycloak to improve performance. Default: `false`.<br />*Since 2.2.0* (tenant queries since 2.3.0) |
 | `maxCacheSize` | Maximum size of the cache. Least used entries are evicted when this limit is reached. Default: `500`.<br />*Since 2.2.0* |
 | `cacheExpirationTimeoutMin` | Time (in minutes) after which a cached entry is evicted. Default: `15 minutes`.<br />*Since 2.2.0* |
 
-Besides caching of user and group queries there is another scenario where caching could make sense. 
+Besides caching of user, group and tenant queries there is another scenario where caching could make sense. 
 
 ### Login caching
 
@@ -397,7 +399,7 @@ version: "3.9"
 
 services:
   jboss.keycloak:
-    image: quay.io/keycloak/keycloak:26.4.5
+    image: quay.io/keycloak/keycloak:26.7.5
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin

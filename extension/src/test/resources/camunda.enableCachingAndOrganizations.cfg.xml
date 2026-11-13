@@ -42,7 +42,6 @@
 
     <!-- Keycloak organizations = CIB seven tenants -->
     <property name="organizationsEnabled" value="true" />
-    <property name="organizationsExtendedQueriesEnabled" value="true" />
 
     <property name="cacheEnabled" value="true" />
     <property name="cacheExpirationTimeoutMin" value="5" />

@@ -20,14 +20,14 @@ import junit.framework.Test;
 
 /**
  * Tests tenant queries (Keycloak organizations = CIB seven tenants) and user queries filtered by tenant
- * with {@code organizationsEnabled} and {@code organizationsExtendedQueriesEnabled}.
+ * with {@code organizationsEnabled}.
  * <p>
  * Test data: Tenant One = camunda, gunnar / Tenant Two = gunnar, johnfoo / hans is member of no tenant.
  */
 public class KeycloakTenantQueryTest extends AbstractKeycloakTenantQueryTest {
 
 	public static Test suite() {
-		return tenantSuite(KeycloakTenantQueryTest.class, "camunda.enableOrganizations.cfg.xml", MANAGE_REALM);
+		return tenantSuite(KeycloakTenantQueryTest.class, "camunda.enableOrganizations.cfg.xml", VIEW_ORGANIZATIONS);
 	}
 
 	// ------------------------------------------------------------------------

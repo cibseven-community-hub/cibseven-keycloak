@@ -42,7 +42,6 @@
 
     <!-- Keycloak organizations = CIB seven tenants -->
     <property name="organizationsEnabled" value="true" />
-    <property name="organizationsExtendedQueriesEnabled" value="true" />
   </bean>
 
 </beans>

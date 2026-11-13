@@ -128,7 +128,7 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 				KEYCLOAK_ENFORCE_SUBGROUPS_IN_GROUP_QUERY =
 						Boolean.valueOf(getConfigValue(defaults, "keycloak.enforce.subgroups.in.group.query"));
 				
-				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.5.5")
+				keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.7.5")
 					.withAdminUsername(KEYCLOAK_ADMIN_USER)
 					.withAdminPassword(KEYCLOAK_ADMIN_PASSWORD)
 					.withExposedPorts(containerPort,containerAdminPort) // Keycloak’s container ports
@@ -689,7 +689,7 @@ public abstract class AbstractKeycloakIdentityProviderTest extends PluggableProc
 	// ------------------------------------------------------------------------
 
 	/**
-	 * Grants additional realm-management client roles (e.g. {@code manage-realm}) to the
+	 * Grants additional realm-management client roles (e.g. {@code view-organizations}) to the
 	 * service account of the test client. Used by tests which need more than the default permissions, so that
 	 * all other tests keep running with the minimal set of permissions.
 	 * <p>

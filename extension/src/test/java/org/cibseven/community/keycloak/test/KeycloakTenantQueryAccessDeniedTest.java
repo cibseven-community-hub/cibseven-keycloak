@@ -3,17 +3,16 @@ package org.cibseven.community.keycloak.test;
 import junit.framework.Test;
 
 /**
- * Tests tenant related queries with {@code organizationsEnabled} and {@code organizationsExtendedQueriesEnabled}
- * switched on, but without the {@code manage-realm} role for the service account.
+ * Tests tenant related queries with {@code organizationsEnabled} switched on, but without the
+ * {@code view-organizations} role for the service account.
  * <p>
- * Keycloak answers the organization endpoints of the extended queries with 403. The plugin must not fail
- * (this would e.g. break the Admin webapp), but return no result and log a warning.
- * The organizations of a user do not require {@code manage-realm}, see {@link KeycloakTenantQueryBasicTest}.
+ * Keycloak answers the organization endpoints with 403. The plugin must not fail (this would e.g. break
+ * the login of the webapps, which query the tenants of the user), but return no tenants and log a warning.
  */
 public class KeycloakTenantQueryAccessDeniedTest extends AbstractKeycloakTenantQueryTest {
 
 	public static Test suite() {
-		// intentionally no MANAGE_REALM
+		// intentionally no VIEW_ORGANIZATIONS
 		return tenantSuite(KeycloakTenantQueryAccessDeniedTest.class, "camunda.enableOrganizations.cfg.xml");
 	}
 
@@ -23,8 +22,8 @@ public class KeycloakTenantQueryAccessDeniedTest extends AbstractKeycloakTenantQ
 		assertNull(identityService.createTenantQuery().tenantId(TENANT_ID_ONE).singleResult());
 	}
 
-	public void testFindTenantByIdReturnsNull() {
-		assertNull(findTenantById(TENANT_ID_ONE));
+	public void testTenantQueryByUserMemberReturnsNothing() {
+		assertEquals(0, identityService.createTenantQuery().userMember(USER_ID_GUNNAR).count());
 	}
 
 	public void testUserQueryMemberOfTenantReturnsNothing() {
